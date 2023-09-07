@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .tag {
+    @apply bg-amber-400 rounded-sm text-xs px-2 py-1 w-min shadow-sm shadow-slate-400;
+  }
+}
