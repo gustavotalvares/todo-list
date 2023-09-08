@@ -3,7 +3,7 @@ const tasks = document.getElementById('tasks');
 function addTask(title) {
   tasks.innerHTML += `
   <!-- Tarefa -->
-  <div class="container bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex">
+  <div class="container min-h-1 bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex">
 
     <!-- Botões da esquerda -->
     <div class=" w-14 divide-y h-auto bg-slate-100 border-r border-slate-200 flex-shrink-0 flex-grow-0">
@@ -24,10 +24,7 @@ function addTask(title) {
     <div class="container px-4 py-3 gap-1 flex flex-col justify-center items-start">
       <div class="container flex items-center">
         <p class="text-2xl text-left mr-3">${title}</p>
-        <div class="w-min h-min px-1 py-[1px] rounded-md text-xs tracking-wide text-red-600 border-red-600 border-2 font-semibold">Urgente</div>
       </div>
-      <p class="text-sm text-left text-slate-500">Descrição da tarefa</p>
-      <div class="text-xs text-left text-slate-500 pt-3">07/09/2023 - 16:30</div>
     </div>
     <!-- /Infos da tarefa -->
 
