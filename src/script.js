@@ -42,3 +42,7 @@ function addTask(title) {
   <!-- /Tarefa -->
   `
 }
+
+window.onload = () => {
+  addTask('Título da tarefa');
+}
