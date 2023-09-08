@@ -3,7 +3,7 @@ const tasks = document.getElementById('tasks');
 function addTask(title) {
   tasks.innerHTML += `
   <!-- Tarefa -->
-  <div class="container min-h-1 bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex">
+  <div class="container mb-3 min-h-1 bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex">
 
     <!-- Botões da esquerda -->
     <div class=" w-14 divide-y h-auto bg-slate-100 border-r border-slate-200 flex-shrink-0 flex-grow-0">
