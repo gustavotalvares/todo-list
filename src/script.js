@@ -1,12 +1,17 @@
 const body = document.querySelector('body');
+const inputNewTask = document.getElementById('newTaskInput');
 const divTasks = document.getElementById('tasks');
-const divModalBackground = document.getElementById('modalBackground');
-const divTaskEditor = document.getElementById('taskEditor');
-const btnModalClose = document.getElementById('modalClose');
-const inputModalTaskTitle = document.getElementById('editTaskTitle');
-const btnTags = document.getElementById('tags');
-const divTagsDropdown = document.getElementById('tagsDropdown');
-const divTagsColorPalette = document.getElementById('colorPalette');
+const divModal = document.getElementById('modal');
+const modalWindow = document.getElementById('modalWindow');
+const modalClose = document.getElementById('modalClose');
+const modalTaskTitle = document.getElementById('modalTaskTitle');
+const modalTaskDescription = document.getElementById('modalTaskDescription');
+const modalTaskDate = document.getElementById('modalTaskDate');
+const modalTaskTime = document.getElementById('modalTaskTime');
+const modalBtnConfirma = document.getElementById('modalBtnConfirma');
+const modalDeleteTask = document.getElementById('modalDeleteTask');
+
+let currentTask;
 
 // HTML dos icons
 const icons = {
@@ -24,103 +29,195 @@ const icons = {
   </svg>`
 }
 
-function openModal(event) {
-  const selectedTask = event.currentTarget.parentElement.parentElement;
-  const title = selectedTask.children[1].firstElementChild.firstElementChild;
-  inputModalTaskTitle.value = title.innerText;
-  console.log(title);
-  divModalBackground.classList.remove('hidden');
-  divModalBackground.classList.add('flex');
+function preencheModal(task) {
+  modalTaskTitle.value = task.title;
+  modalTaskDescription.value = task.description;
+  const amd = task.date.split('/').reverse();
+  modalTaskDate.value = amd.join('-')
+  modalTaskTime.value = task.time;
 }
 
-function addTask(title) {
-  // Cria a div da nova tarefa e adiciona suas classes
-  const divNewTask = document.createElement('div');
-  divNewTask.classList.add(...'container mb-3 min-h-1 bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex'.split(' '))
-  
-  // Cria a div dos botões à esquerda e adiciona suas classes
-  const divLeftButtons = document.createElement('div');
-  divLeftButtons.classList.add(...'w-14 divide-y h-auto bg-slate-100 border-r border-slate-200 flex-shrink-0 flex-grow-0'.split(' '))
-
-  // Cria a div do botão de editar, adiciona suas classes e ícone e insere a divLeftButtons
-  const divEditButton = document.createElement('div');
-  divEditButton.classList.add(...'group h-1/2 w-full flex justify-center items-center hover:bg-slate-200'.split(' '))
-  divEditButton.innerHTML = icons.editIcon;
-  divLeftButtons.appendChild(divEditButton);
-  // Adiciona o eventListener do botão
-  divEditButton.addEventListener('click', openModal);
-
-
-  // Cria a div do botão de deletar, adiciona suas classes e ícone e insere a divLeftButtons
-  const divDeleteButton = document.createElement('div');
-  divDeleteButton.classList.add(...'group h-1/2 w-full flex justify-center items-center hover:bg-slate-200'.split(' '))
-  divDeleteButton.innerHTML = icons.deleteIcon;
-  divLeftButtons.appendChild(divDeleteButton);
-
-  // Insere divLeftButtons a divNewTask
-  divNewTask.appendChild(divLeftButtons);
-
-  // Cria div da area que apresenta as informações da tarefa
-  const divInfos = document.createElement('div');
-  divInfos.classList.add(...'container px-4 py-3 gap-1 flex flex-col justify-center items-start'.split(' '));
-
-  // Cria a div que contem o título da tarefa
-  const divTitle = document.createElement('div');
-  divTitle.classList.add(...'container flex items-center'.split(' '))
-
-  // Cria o p que contém o título da tarefa
-  const pTitle = document.createElement('p');
-  pTitle.classList.add(...'text-2xl text-left mr-3'.split(' '))
-  pTitle.textContent = title;
-
-  // popula divInfos e adiciona à divNewTask
-  divTitle.appendChild(pTitle);
-  divInfos.appendChild(divTitle);
-  divNewTask.appendChild(divInfos);
-
-  // Cria a div que contém o botão à direita
-  const divRightButton = document.createElement('div');
-  divRightButton.classList.add(...'group border-l border-l-slate-200 hover:bg-slate-200 container flex flex-col items-end justify-center px-4 flex-grow-0 w-min flex-shrink-0'.split(' '));
-
-  // Cria o botão à direita
-  const divCheckButton = document.createElement('div');
-  divCheckButton.classList.add(...'flex justify-center'.split(' '))
-  divCheckButton.innerHTML = icons.checkIcon;
-
-  // Adiciona a div com o botão à direita a divNewTask
-  divRightButton.appendChild(divCheckButton);
-  divNewTask.appendChild(divRightButton);
-
-  // Adiciona a divNewTask à divTasks
-  divTasks.appendChild(divNewTask);
+function openModal(task) {
+  currentTask = task;
+  preencheModal(task);
+  divModal.classList.remove('hidden');
+  divModal.classList.add('flex');
 }
 
 function closeModal() {
-  divModalBackground.classList.remove('flex');
-  divModalBackground.classList.add('hidden');
+  divModal.classList.remove('flex');
+  divModal.classList.add('hidden');
 }
 
-function openTags() {
-  divTagsDropdown.classList.remove('hidden');
-  divTagsDropdown.classList.add('flex');
+function deleteTask(task) {
+  divTasks.removeChild(task.divTask);
 }
 
-function closeTags(e) {
-  if (!btnTags.contains(e.target)){
-    divTagsDropdown.classList.remove('flex');
-    divTagsDropdown.classList.add('hidden');
+function updateTaskTitle(task, newTitle) {
+  task.title = newTitle;
+  task.pTitle.textContent = newTitle;
+}
+
+function updateTaskDescription(task, newDescription = '') {
+  if (newDescription) {
+    task.pDescription.classList.remove('hidden');
   } else {
-    
+    task.pDescription.classList.add('hidden');
+  }
+  task.description = newDescription;
+  task.pDescription.textContent = newDescription;
+}
+
+function updateTaskDate(task, newDate = '') {
+  task.date = newDate;
+}
+
+function updateTaskTime(task, newTime = '') {
+  task.time = newTime;
+}
+
+function updateTaskDateTime(task){
+  task.pDateTime.textContent = `${task.date ? task.date : ''}${(task.date && task.time) ? ' - ' : ''}${task.time ? task.time : ''}`;
+  if (task.pDateTime.textContent === '') {
+    task.pDateTime.classList.add('hidden');
+  } else {
+    task.pDateTime.classList.remove('hidden');
   }
 }
 
+function addTask(title) {
+  const task = {}
+  task.title = title;
+  task.description = '';
+  task.date = '';
+  task.time = '';
+
+  // Cria a div da nova tarefa e adiciona suas classes
+  task.divTask = document.createElement('div');
+  task.divTask.classList.add(...'container mb-3 min-h-1 bg-slate-100 shadow-sm shadow-slate-300 hover:shadow-slate-400 hover:scale-[1.01] transition-all duration-200 rounded-md overflow-hidden flex'.split(' '))
+  
+  // Cria a div dos botões à esquerda e adiciona suas classes
+  task.divLeftButtons = document.createElement('div');
+  task.divLeftButtons.classList.add(...'w-14 divide-y h-auto bg-slate-100 border-r border-slate-200 flex-shrink-0 flex-grow-0'.split(' '))
+
+  // Cria a div do botão de editar, adiciona suas classes e ícone e insere a divLeftButtons
+  task.divEditButton = document.createElement('div');
+  task.divEditButton.classList.add(...'group h-1/2 w-full flex justify-center items-center hover:bg-slate-200'.split(' '))
+  task.divEditButton.innerHTML = icons.editIcon;
+  task.divLeftButtons.appendChild(task.divEditButton);
+
+  // Cria a div do botão de deletar, adiciona suas classes e ícone e insere a divLeftButtons
+  task.divDeleteButton = document.createElement('div');
+  task.divDeleteButton.classList.add(...'group h-1/2 w-full flex justify-center items-center hover:bg-slate-200'.split(' '))
+  task.divDeleteButton.innerHTML = icons.deleteIcon;
+  task.divLeftButtons.appendChild(task.divDeleteButton);
+
+  // Insere divLeftButtons a divTask
+  task.divTask.appendChild(task.divLeftButtons);
+
+  // Cria div da area que apresenta as informações da tarefa
+  task.divInfos = document.createElement('div');
+  task.divInfos.classList.add(...'container px-4 py-3 gap-1 flex flex-col justify-center items-start'.split(' '));
+
+  // Cria a div que contem o título da tarefa
+  task.divTitle = document.createElement('div');
+  task.divTitle.classList.add(...'container flex items-center'.split(' '))
+
+  // Cria o p que contém o título da tarefa
+  task.pTitle = document.createElement('p');
+  task.pTitle.classList.add(...'text-2xl text-left mr-3'.split(' '))
+  task.pTitle.textContent = task.title;
+
+  // Cria o p que contém a descrição
+  task.pDescription = document.createElement('p');
+  task.pDescription.classList.add(...'text-sm text-left text-slate-500'.split(' '));
+  task.pDescription.textContent = task.description;
+  if (task.description === '') {
+    task.pDescription.classList.add('hidden');
+  }
+
+  // Cria o p que contém data e hora da task
+  task.pDateTime = document.createElement('p');
+  task.pDateTime.classList.add(...'text-xs text-left text-slate-500 pt-3'.split(' '));
+  task.pDateTime.textContent = `${task.date ? task.date : ''}${(task.date && task.time) ? ' - ' : ''}${task.time ? task.time : ''}`;
+  if (task.pDateTime.textContent === '') {
+    task.pDateTime.classList.add('hidden');
+  }
+
+  // popula divInfos e adiciona à divTask
+  task.divTitle.appendChild(task.pTitle);
+  task.divInfos.appendChild(task.divTitle);
+  task.divInfos.appendChild(task.pDescription);
+  task.divInfos.appendChild(task.pDateTime);
+  task.divTask.appendChild(task.divInfos);
+
+  // Cria a div que contém o botão à direita
+  task.divRightButton = document.createElement('div');
+  task.divRightButton.classList.add(...'group border-l border-l-slate-200 hover:bg-slate-200 container flex flex-col items-end justify-center px-4 flex-grow-0 w-min flex-shrink-0'.split(' '));
+
+  // Cria o botão à direita
+  task.divCheckButton = document.createElement('div');
+  task.divCheckButton.classList.add(...'flex justify-center'.split(' '))
+  task.divCheckButton.innerHTML = icons.checkIcon;
+
+  // Adiciona a div com o botão à direita a divTask
+  task.divRightButton.appendChild(task.divCheckButton);
+  task.divTask.appendChild(task.divRightButton);
+
+  // Adiciona o eventListener da task
+  task.divTask.addEventListener('click', (e) => {
+    if (task.divEditButton.contains(e.target)) {
+      openModal(task);
+    }
+
+    if (task.divDeleteButton.contains(e.target)) {
+      deleteTask(task)
+    }
+  });
+
+  // Adiciona a divTask à divTasks
+  divTasks.appendChild(task.divTask);
+}
+
+function modalConfirma(){
+  if(modalTaskTitle.value !== '') {
+    updateTaskTitle(currentTask, modalTaskTitle.value);
+    updateTaskDescription(currentTask, modalTaskDescription.value);
+    const dma = modalTaskDate.value.split('-').reverse();
+    updateTaskDate(currentTask, dma.join('/'));
+    updateTaskTime(currentTask, modalTaskTime.value);
+    updateTaskDateTime(currentTask);
+    closeModal();
+  }
+}
+
+divModal.addEventListener('click', (e) => {
+  if (!modalWindow.contains(e.target) || modalClose.contains(e.target)) {
+    closeModal();
+  }
+
+  if (modalBtnConfirma.contains(e.target)) {
+    modalConfirma();
+  }
+
+  if (modalDeleteTask.contains(e.target)) {
+    deleteTask(currentTask);
+    closeModal();
+  }
+})
+
+divModal.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    modalConfirma();
+  }
+})
+
 window.onload = () => {
   addTask('Título da tarefa');
-  btnModalClose.addEventListener('click', closeModal);
-  // btnTags.addEventListener('click', switchTags);
-  divTagsDropdown.addEventListener('click', (e) => {
-    e.stopImmediatePropagation();
+  inputNewTask.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && inputNewTask.value !== '') {
+      addTask(inputNewTask.value);
+      inputNewTask.value = '';
+    }
   })
-  btnTags.addEventListener('focusin', openTags);
-  btnTags.addEventListener('focusout', closeTags);
 }

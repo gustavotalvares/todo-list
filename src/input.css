@@ -4,6 +4,6 @@
 
 @layer components {
   .tag {
-    @apply bg-amber-400 rounded-sm text-xs px-2 py-1 w-min shadow-sm shadow-slate-400;
+    @apply w-min h-min px-[2px] py-[1px] rounded-md text-xs tracking-wide border font-medium;
   }
 }
