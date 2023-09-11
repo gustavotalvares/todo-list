@@ -9,13 +9,13 @@
 <body class="h-full flex justify-center text-center">
 
   <!-- Container principal (tudo vai dentro dele) -->
-  <div class="container max-w-2xl space-y-7 sm:py-10">
+  <div class="container max-w-2xl sm:py-10 relative">
 
     <!-- Header -->
-    <h1 class="text-4xl">
+    <h1 class="text-4xl mb-7">
       Lista de Tarefas
     </h1>
-    <input id="newTaskInput" type="text" placeholder="Digite aqui a próxima tarefa e pressione ENTER" class="outline-none w-full px-4 py-3 text-lg text-gray-800 rounded-md border border-slate-200 shadow-slate-200 shadow-sm">
+    <input id="newTaskInput" type="text" placeholder="Digite aqui a próxima tarefa e pressione ENTER" class="outline-none w-full px-4 py-3 text-lg text-gray-800 rounded-md border border-slate-200 shadow-slate-200 shadow-sm mb-7">
     <!-- /Header -->
 
     <!-- Lista das tarefas -->
@@ -68,7 +68,7 @@
     <!-- /Lista das tarefas -->
 
     <!-- Modal de edição de tarefa -->
-    <div id="modal" class="mt-0 w-screen h-screen fixed top-0 left-0 bg-black bg-opacity-40 justify-center items-center hidden">
+    <div id="modal" class="w-screen h-screen fixed top-0 left-0 bg-black bg-opacity-40 justify-center items-center hidden">
       <div id="modalWindow" class="container max-w-2xl bg-slate-100 rounded-md shadow-md shadow-slate-700 divide-y divide-slate-200">
 
         <!-- Header do modal -->
@@ -91,7 +91,7 @@
             <input id="modalTaskTime" type="time" class="outline-none w-1/3 px-4 py-2 text-sm text-gray-800 rounded-md border border-slate-200 shadow-slate-200 shadow-sm">
             
             <!-- Tags -->
-            <button id="tags" type="button" class="relative w-1/3 text-sm text-gray-800 rounded-md border border-slate-200 shadow-slate-200 shadow-sm bg-white box-border focus-within:">
+            <button id="modalBtnTags" type="button" class="relative w-1/3 text-sm text-gray-800 rounded-md border border-slate-200 shadow-slate-200 shadow-sm bg-white box-border focus-within:">
               <div class="py-2 px-4 relative flex justify-between items-center">
                 <div class="overflow-hidden flex gap-1 flex-grow relative">
                   <span class="tag text-orange-600 border-orange-600">Urgente</span>
@@ -107,7 +107,7 @@
               </div>
 
               <!-- Dropdown -->
-              <div id="tagsDropdown" class="container hidden focus-within:flex flex-col divide-y divide-slate-200 absolute -left-[1px] w-full rounded-b-md border border-slate-200 shadow-slate-200 shadow-sm bg-white box-content">
+              <div id="modalTagsDropdown" class="container hidden focus-within:flex flex-col divide-y divide-slate-200 absolute -left-[1px] w-full rounded-b-md border border-slate-200 shadow-slate-200 shadow-sm bg-white box-content">
                 
                 <!-- Seleção e edição de tag -->
                 <div class="relative w-full flex">

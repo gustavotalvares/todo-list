@@ -10,6 +10,8 @@ const modalTaskDate = document.getElementById('modalTaskDate');
 const modalTaskTime = document.getElementById('modalTaskTime');
 const modalBtnConfirma = document.getElementById('modalBtnConfirma');
 const modalDeleteTask = document.getElementById('modalDeleteTask');
+const modalBtnTags= document.getElementById('modalBtnTags');
+const modalTagsDropdown = document.getElementById('modalTagsDropdown');
 
 let currentTask;
 
@@ -85,12 +87,12 @@ function updateTaskDateTime(task){
   }
 }
 
-function addTask(title) {
+function addTask(title, description = '', date = '', time = '') {
   const task = {}
   task.title = title;
-  task.description = '';
-  task.date = '';
-  task.time = '';
+  task.description = description;
+  task.date = date;
+  task.time = time;
 
   // Cria a div da nova tarefa e adiciona suas classes
   task.divTask = document.createElement('div');
@@ -191,6 +193,7 @@ function modalConfirma(){
   }
 }
 
+// Funcionalidades do modal
 divModal.addEventListener('click', (e) => {
   if (!modalWindow.contains(e.target) || modalClose.contains(e.target)) {
     closeModal();
@@ -203,6 +206,14 @@ divModal.addEventListener('click', (e) => {
   if (modalDeleteTask.contains(e.target)) {
     deleteTask(currentTask);
     closeModal();
+  }
+
+  if (modalBtnTags.contains(e.target)) {
+    modalTagsDropdown.classList.remove('hidden');
+    modalTagsDropdown.classList.add('flex');
+  } else {
+    modalTagsDropdown.classList.remove('flex');
+    modalTagsDropdown.classList.add('hidden');
   }
 })
 
