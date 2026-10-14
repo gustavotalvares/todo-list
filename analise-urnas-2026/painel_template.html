@@ -176,18 +176,41 @@ function el(tag, attrs = {}, parent) { const n = document.createElementNS(NS, ta
 function hover(n, html) { n.addEventListener('mousemove', e => showTip(e, html)); n.addEventListener('mouseleave', hideTip); n.style.cursor = 'default'; }
 function ticks(min, max, n = 5) { const span = max - min, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0)); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0); const out = []; for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10)); return out; }
 
-const B = D.resumo.brasil, Q = D.resumo.qualidade;
+const B = D.resumo.brasil, BB = D.resumo.brasil_sem_zz, Q = D.resumo.qualidade, DIST = D.resumo.distribuicao;
 const ufs = D.uf.filter(u => u.uf !== 'ZZ');
 
 // Cabeçalho e números-chave
 document.getElementById('lede').textContent = `${int(Q.secoes_decodificadas)} boletins de urna e logs decodificados, um por seção, cobrindo ${int(B.comparecimento)} votantes. Para cada seção: quantos eleitores votaram sem biometria cadastrada, quantos tinham biometria e não foram reconhecidos, e quantos confirmaram o voto para presidente depois das 17h de Brasília.`;
 const tiles = [
-  [fmt(B.pct_sem_cadastro, 2) + '%', 'votaram sem biometria cadastrada', `${int(B.sem_biometria)} votantes`],
-  [fmt(B.pct_falha_bio, 2) + '%', 'dos que tinham biometria foram liberados sem reconhecimento', `${int(B.hab_biografia)} votantes`],
-  [fmt(B.pct_apos_corte, 3) + '%', 'dos votos presidenciais confirmados após 17h de Brasília', `${int(B.pres_apos_corte)} votos em ${int(D.resumo.secoes_com_voto_apos_corte)} seções`],
-  [int(Q.secoes_decodificadas), 'seções decodificadas', `${int(Q.secoes_log_conciliado)} com log conciliado ao BU`],
+  [fmt(BB.pct_sem_cadastro, 2) + '%', 'votaram sem biometria cadastrada', `${int(BB.sem_biometria)} votantes no Brasil`],
+  [fmt(BB.pct_falha_bio, 2) + '%', 'dos que tinham biometria foram liberados sem reconhecimento', `${int(BB.hab_biografia)} votantes no Brasil`],
+  [fmt(B.pct_apos_corte, 2) + '%', 'dos votos presidenciais confirmados após 17h de Brasília', `${int(B.pres_apos_corte)} votos em ${int(D.resumo.secoes_com_voto_apos_corte)} seções`],
+  [int(Q.secoes_decodificadas), 'seções decodificadas', `de ${int(D.resumo.secoes_cadastro)} no cadastro · ${int(Q.secoes_log_conciliado)} com log conciliado`],
 ];
 document.getElementById('tiles').innerHTML = tiles.map(t => `<div class="tile"><div class="v">${t[0]}</div><div class="k">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
+
+// Textos que dependem dos números
+(function () {
+  const hb = B.pres_apos_corte_hab_antes, tot = B.pres_apos_corte;
+  const top = [...D.uf].sort((a, b) => b.pct_apos_corte - a.pct_apos_corte).slice(0, 3).map(u => `${UFN[u.uf]} (${fmt(u.pct_apos_corte, 1)}%)`).join(', ');
+  const sp = D.uf.find(u => u.uf === 'SP');
+  document.getElementById('txt-apos').textContent = `${int(tot)} votos para presidente (${fmt(B.pct_apos_corte, 2)}%) foram confirmados depois das 17h de Brasília, em ${int(D.resumo.secoes_com_voto_apos_corte)} seções. Só ${int(hb)} desses (${fmt(100 * hb / tot, 1)}%) vieram de eleitores habilitados antes das 17h; os demais foram habilitados depois, o padrão de quem estava na fila no encerramento, o que a lei permite. A concentração é regional: ${top}, contra ${fmt(sp.pct_apos_corte, 2)}% em São Paulo.`;
+  const g = (v, m) => D.reg.find(r => r.desfecho === 'margem_13_22' && r.modelo === m && r.variavel === v);
+  const M0 = 'Sem efeitos fixos', M1 = 'EF de local + perfil do eleitorado';
+  const span = v => DIST[v]['0.9'] - DIST[v]['0.1'];
+  const efeito = v => g(v, M1).coef_pp_por_pp * span(v);
+  document.getElementById('txt-coef').textContent = `Sem ajuste, cada ponto a mais de votos após as 17h vem junto com ${fmt(g('pct_apos_corte', M0).coef_pp_por_pp, 2)} p.p. a mais de margem para Lula, porque esses votos se concentram no Nordeste. Comparando seções do mesmo colégio e com o mesmo perfil de eleitorado, o número cai para ${fmt(g('pct_apos_corte', M1).coef_pp_por_pp, 3)}. Em termos práticos, ir de uma seção típica do 10º para o 90º percentil de cada indicador muda a margem em ${fmt(efeito('pct_sem_cadastro'), 2)} p.p. (sem cadastro, de ${fmt(DIST.pct_sem_cadastro['0.1'], 1)}% a ${fmt(DIST.pct_sem_cadastro['0.9'], 1)}%), ${fmt(efeito('pct_falha_bio'), 2)} p.p. (falha, de ${fmt(DIST.pct_falha_bio['0.1'], 1)}% a ${fmt(DIST.pct_falha_bio['0.9'], 1)}%) e ${fmt(efeito('pct_apos_corte'), 2)} p.p. (após 17h, de 0% a ${fmt(DIST.pct_apos_corte['0.9'], 1)}%). O sinal da ausência de cadastro se inverte depois do ajuste, sinal de que o número bruto refletia geografia e composição do eleitorado.`;
+  const met = [
+    `Fonte primária: pacote "Arquivos transmitidos para totalização" do 1º turno (TSE), por UF. Foram lidos apenas o BU e o log de cada seção, por HTTP Range, com tamanho e CRC32 de cada arquivo conferidos (59 GB lidos dos 90 GB publicados). ${int(Q.secoes_decodificadas)} de ${int(D.resumo.secoes_cadastro)} seções principais do cadastro estão no pacote, que inclui só as seções totalizadas.`,
+    'O BU (ASN.1/DER) foi decodificado com o mapeamento do aplicativo Resultados do TSE. Ele traz, por seção, três contadores: sem biometria cadastrada, habilitados pela digital e habilitados por dados pessoais apesar de terem biometria. Os votos presidenciais de cada BU batem com o CSV oficial (100% das seções de RR conferidas campo a campo) e, somados, com o arquivo oficial por município/zona a menos de 0,003% — a diferença vem de seções ausentes do pacote e dos votos no candidato 28 (PRTB), que o arquivo oficial não conta como nominais.',
+    `Validação independente: a taxa de votantes sem cadastro de cada seção correlaciona ${fmt(Q.corr_sem_cadastro_votantes_vs_aptos, 2)} com a proporção de eleitores aptos sem biometria no cadastro (perfil do eleitorado por seção, TSE).`,
+    `Horário: o log registra "Voto confirmado para [Presidente]" com hora, sem o candidato. As urnas usam o fuso local; a votação vai das 8h às 17h de Brasília (8h–17h locais no exterior). O corte local de cada município é a abertura típica observada no log (mediana de "Urna pronta para receber votos") + 9 horas: 8h em ${int(Q.abertura_local_por_municipio['8'])} municípios, 7h em ${int(Q.abertura_local_por_municipio['7'] || 0)}, 6h em ${int(Q.abertura_local_por_municipio['6'] || 0)} e 9h em ${int(Q.abertura_local_por_municipio['9'] || 0)}. Usam-se só seções cujo log concilia exatamente com o BU (${int(Q.secoes_log_conciliado)}), contando votos nulos atribuídos por suspensão do eleitor.`,
+    `Modelo: mínimos quadrados ponderados pelos votos válidos, seção como unidade, ${int(Q.secoes_amostra_modelo)} seções no Brasil com log conciliado, 20+ votos válidos e perfil disponível. Controles: comparecimento, log do eleitorado, modelo da urna e, no modelo principal, sexo, faixas etárias e escolaridade do eleitorado da seção. Efeitos fixos absorvidos por transformação within; erro-padrão agrupado por município.`,
+    'Testes locais: por município (40+ seções, 5+ colégios), o mesmo modelo com efeito fixo de colégio; por colégio (6+ seções), correlação simples. Correção de Benjamini–Hochberg para a taxa de falsas descobertas.',
+    'Limites: associação entre seções não identifica o voto de grupos de eleitores (falácia ecológica); a ausência de cadastro é uma característica do eleitorado definida antes da eleição; a falha de reconhecimento pode refletir idade, ocupação e condição das digitais. Nada aqui verifica assinaturas digitais dos arquivos.',
+  ];
+  document.getElementById('metodo').innerHTML = met.map(t => `<li>${t}</li>`).join('');
+})();
 
 // 1. Dot plot por UF
 (function () {

@@ -121,7 +121,7 @@ def agregar(df, vcols, chave, cands):
     soma = ['aptos', 'comparecimento', 'sem_biometria', 'hab_biometria', 'hab_biografia', 'com_biometria',
             'validos', 'brancos', 'nulos'] + vcols
     g = df.groupby(chave, dropna=False)
-    a = g[soma].sum()
+    a = g[soma].sum(min_count=1)
     a['secoes'] = g.size()
     lc = df[df.log_conciliado].groupby(chave, dropna=False)
     a['secoes_log_conciliado'] = lc.size()
@@ -129,7 +129,8 @@ def agregar(df, vcols, chave, cands):
     a['pres_apos_corte'] = lc.pres_apos_corte.sum()
     a['pres_apos_corte_hab_antes'] = lc.pres_apos_corte_hab_antes.sum()
     a['hab_apos_corte'] = lc.hab_apos_corte.sum()
-    a = a.fillna(0)
+    a[['secoes_log_conciliado', 'pres_log', 'pres_apos_corte', 'pres_apos_corte_hab_antes', 'hab_apos_corte']] = a[
+        ['secoes_log_conciliado', 'pres_log', 'pres_apos_corte', 'pres_apos_corte_hab_antes', 'hab_apos_corte']].fillna(0)
     a['pct_comparecimento'] = 100 * a.comparecimento / a.aptos
     a['pct_sem_cadastro'] = 100 * a.sem_biometria / a.comparecimento
     a['pct_falha_bio'] = 100 * a.hab_biografia / a.com_biometria
@@ -403,7 +404,6 @@ def main():
     br = ag_br.iloc[0]
     qual = {
         'secoes_decodificadas': int(len(df)),
-        'secoes_cadastro_principais_1t': None,
         'secoes_com_log': int(df.log_ok.fillna(False).sum()),
         'secoes_log_conciliado': int(df.log_conciliado.sum()),
         'secoes_amostra_modelo': int(len(d)),
@@ -418,6 +418,9 @@ def main():
         'candidatos': {c: nomes.get(c, c) for c in cands},
         'qualidade': qual,
         'brasil': {k: (float(v) if isinstance(v, (int, float, np.number)) else v) for k, v in br.items()},
+        # biometria só existe no Brasil: taxas biométricas nacionais usam este recorte
+        'brasil_sem_zz': {k: (float(v) if isinstance(v, (int, float, np.number)) else v) for k, v in ag_br_sem_zz.iloc[0].items()},
+        'secoes_cadastro': int(pd.read_csv(a.locais, usecols=['DS_TIPO_SECAO_AGREGADA']).eq('Principal').sum().iloc[0]),
         'testes_municipio': resumo_testes(t_mun),
         'testes_local': resumo_testes(t_loc),
         'binned_local': bins,
