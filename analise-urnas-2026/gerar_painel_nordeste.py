@@ -34,6 +34,9 @@ def main():
         a = json.loads(ag.read_text())
         a['secoes_assinatura_suspeita'].pop('lista', None)
         r['agilidade'] = a
+    ab = AQUI / 'resultados' / 'nordeste' / 'abstencao.json'
+    if ab.exists():
+        r['abstencao'] = json.loads(ab.read_text())
     tpl = (AQUI / 'painel_nordeste_template.html').read_text()
     css = re.search(r'<style>.*?</style>', (AQUI / 'painel_template.html').read_text(), re.S).group(0)
     html = tpl.replace('/*__CSS__*/', css).replace(

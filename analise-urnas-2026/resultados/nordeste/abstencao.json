@@ -1,0 +1,227 @@
+{
+ "secoes": 140076,
+ "por_grupo": [
+  {
+   "grupo": "Sem votos após 17h",
+   "secoes": 49357,
+   "aptos_medio": 259.0739712705391,
+   "abstencao": 18.031488575139004,
+   "abstencao_mediana_secao": 17.5609756097561,
+   "pct_secoes_abst_menor_10": 5.044877119760115,
+   "pct_idade_70_mais": 10.470562493795281,
+   "pct_idade_16_24": 13.998682221215878
+  },
+  {
+   "grupo": "Até 10%",
+   "secoes": 57560,
+   "aptos_medio": 322.8038915913829,
+   "abstencao": 18.047336704880017,
+   "abstencao_mediana_secao": 17.63005780346821,
+   "pct_secoes_abst_menor_10": 3.2870048644892282,
+   "pct_idade_70_mais": 9.07818774903805,
+   "pct_idade_16_24": 13.790861700809787
+  },
+  {
+   "grupo": "10–30%",
+   "secoes": 31961,
+   "aptos_medio": 358.6789524733269,
+   "abstencao": 19.2325400318814,
+   "abstencao_mediana_secao": 18.939393939393938,
+   "pct_secoes_abst_menor_10": 1.6207252589092958,
+   "pct_idade_70_mais": 9.57714800575409,
+   "pct_idade_16_24": 13.655961683707716
+  },
+  {
+   "grupo": "30%+",
+   "secoes": 1198,
+   "aptos_medio": 371.2220367278798,
+   "abstencao": 20.667650048119732,
+   "abstencao_mediana_secao": 20.25807525807526,
+   "pct_secoes_abst_menor_10": 1.4190317195325544,
+   "pct_idade_70_mais": 11.061332853666068,
+   "pct_idade_16_24": 14.091700345017877
+  }
+ ],
+ "regressao_continua": [
+  {
+   "modelo": "Nordeste, sem ajuste",
+   "variavel": "pct_apos_corte",
+   "coef": 0.05819042418041963,
+   "ep": 0.013462146941468286,
+   "ic_inf": 0.031804616175141784,
+   "ic_sup": 0.08457623218569747,
+   "p": 1.6272606168325573e-05
+  },
+  {
+   "modelo": "Dentro do município",
+   "variavel": "pct_apos_corte",
+   "coef": 0.014749217436212629,
+   "ep": 0.006160940162124941,
+   "ic_inf": 0.0026737747184477443,
+   "ic_sup": 0.02682466015397751,
+   "p": 0.01676854799145481
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "pct_apos_corte",
+   "coef": -0.01744425834143858,
+   "ep": 0.00438268082781842,
+   "ic_inf": -0.026034312763962682,
+   "ic_sup": -0.008854203918914477,
+   "p": 7.158288746712735e-05
+  },
+  {
+   "modelo": "Colégio + perfil",
+   "variavel": "pct_apos_corte",
+   "coef": -0.029116171851946485,
+   "ep": 0.00400369740302777,
+   "ic_inf": -0.03696341876188092,
+   "ic_sup": -0.021268924942012057,
+   "p": 5.256380940576076e-13
+  }
+ ],
+ "regressao_faixas": [
+  {
+   "modelo": "Nordeste, sem ajuste",
+   "variavel": "Até 10%",
+   "coef": -0.503218741797762,
+   "ep": 0.09912632600345969,
+   "ic_inf": -0.697506340764543,
+   "ic_sup": -0.30893114283098105,
+   "p": 4.2428979790836274e-07
+  },
+  {
+   "modelo": "Nordeste, sem ajuste",
+   "variavel": "10–30%",
+   "coef": 0.4136218418062821,
+   "ep": 0.22384072065664795,
+   "ic_inf": -0.02510597068074788,
+   "ic_sup": 0.852349654293312,
+   "p": 0.06479018345892933
+  },
+  {
+   "modelo": "Nordeste, sem ajuste",
+   "variavel": "30%+",
+   "coef": 1.7640700397282039,
+   "ep": 0.4938619917654,
+   "ic_inf": 0.7961005358680199,
+   "ic_sup": 2.732039543588388,
+   "p": 0.00036363567071105295
+  },
+  {
+   "modelo": "Dentro do município",
+   "variavel": "Até 10%",
+   "coef": -0.6284785415843855,
+   "ep": 0.05345194859400897,
+   "ic_inf": -0.7332443608286431,
+   "ic_sup": -0.523712722340128,
+   "p": 8.441796401442827e-31
+  },
+  {
+   "modelo": "Dentro do município",
+   "variavel": "10–30%",
+   "coef": -0.2525551727609972,
+   "ep": 0.09672502054174509,
+   "ic_inf": -0.4421362130228176,
+   "ic_sup": -0.06297413249917683,
+   "p": 0.009101406537975885
+  },
+  {
+   "modelo": "Dentro do município",
+   "variavel": "30%+",
+   "coef": 0.06305462417995689,
+   "ep": 0.26957448089164404,
+   "ic_inf": -0.46531135836766546,
+   "ic_sup": 0.5914206067275792,
+   "p": 0.8150860102423633
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "Até 10%",
+   "coef": -0.6021642648380477,
+   "ep": 0.0345822191344776,
+   "ic_inf": -0.6699454143416238,
+   "ic_sup": -0.5343831153344717,
+   "p": 7.362104183789393e-63
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "10–30%",
+   "coef": -0.704641075889278,
+   "ep": 0.07457755516933542,
+   "ic_inf": -0.8508130840211755,
+   "ic_sup": -0.5584690677573806,
+   "p": 1.0336823021596553e-20
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "30%+",
+   "coef": -0.18038172295602237,
+   "ep": 0.19045875441060292,
+   "ic_inf": -0.5536808816008041,
+   "ic_sup": 0.19291743568875933,
+   "p": 0.3437202334127553
+  },
+  {
+   "modelo": "Colégio + perfil",
+   "variavel": "Até 10%",
+   "coef": -0.5546871460701357,
+   "ep": 0.030949682067368166,
+   "ic_inf": -0.6153485229221773,
+   "ic_sup": -0.4940257692180941,
+   "p": 3.356560884109101e-66
+  },
+  {
+   "modelo": "Colégio + perfil",
+   "variavel": "10–30%",
+   "coef": -0.762555197744961,
+   "ep": 0.07522906812203396,
+   "ic_inf": -0.9100041712641476,
+   "ic_sup": -0.6151062242257745,
+   "p": 1.617442219019306e-23
+  },
+  {
+   "modelo": "Colégio + perfil",
+   "variavel": "30%+",
+   "coef": -0.48168996418038895,
+   "ep": 0.16468870047721135,
+   "ic_inf": -0.8044798171157233,
+   "ic_sup": -0.1589001112450547,
+   "p": 0.0034895210578582314
+  }
+ ],
+ "limite_ausentes": [
+  {
+   "grupo": "Sem votos após 17h",
+   "votos_apos": 38.0,
+   "pct_digital": 89.47368421052632,
+   "sem_digital": 4.0,
+   "liberados_mesario": 4.0,
+   "sem_digital_pct_dos_aptos": 3.128149166418631e-05
+  },
+  {
+   "grupo": "Até 10%",
+   "votos_apos": 604215.0,
+   "pct_digital": 88.8433752885976,
+   "sem_digital": 67410.0,
+   "liberados_mesario": 18182.0,
+   "sem_digital_pct_dos_aptos": 0.36279791300513997
+  },
+  {
+   "grupo": "10–30%",
+   "votos_apos": 1532818.0,
+   "pct_digital": 88.87252106903755,
+   "sem_digital": 170564.0,
+   "liberados_mesario": 47973.0,
+   "sem_digital_pct_dos_aptos": 1.487856753181205
+  },
+  {
+   "grupo": "30%+",
+   "votos_apos": 118766.0,
+   "pct_digital": 87.48800161662429,
+   "sem_digital": 14860.0,
+   "liberados_mesario": 4676.0,
+   "sem_digital_pct_dos_aptos": 3.3413982604941492
+  }
+ ]
+}

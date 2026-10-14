@@ -89,6 +89,15 @@
   </section>
 
   <section>
+    <div class="eyebrow">4d · Abstenção</div>
+    <h2>Seções com votação tardia não têm abstenção anormalmente baixa</h2>
+    <p class="note">Votos lançados em nome de ausentes reduziriam a abstenção, e cada vez mais à medida que cresce a parcela de votos
+      após 17h. Abaixo, a abstenção de cada grupo e a diferença em relação às seções sem votos após 17h, em pontos percentuais.</p>
+    <div class="tablewrap"><table id="t-abst"></table></div>
+    <p class="note" id="txt-abst"></p>
+  </section>
+
+  <section>
     <div class="eyebrow">5 · Estados e municípios</div>
     <h2>Testes locais</h2>
     <div class="grid2">
@@ -322,6 +331,19 @@ document.getElementById('conclusoes').innerHTML = [
       .map(([l, k, dd]) => `<tr><td class="l">${l}</td>${hs.map(h => `<td>${fmt(g[h][k], dd)}</td>`).join('')}</tr>`).join('') + '</tbody>';
   const S = AG.dentro_da_secao, dc = AG.decomposicao_s, av = AG.acel_vs_margem.find(r => r.modelo === 'Dentro do colégio' && r.variavel === 'acel_cabine');
   document.getElementById('txt-cab').textContent = `Nas ${int(S.secoes)} seções com mais de 10% após 17h, a cabine passa de ${fmt(S.mediana.cab_tarde, 0)} s (14h–17h) para ${fmt(S.mediana.cab_apos, 0)} s depois das 17h (medianas). A queda continua uma tendência que começa às 8h em todos os grupos, inclusive nas seções que fecharam no horário. Depois das 17h a parcela identificada pela digital sobe (${fmt(S.mediana.bio_tarde, 1)}% → ${fmt(S.mediana.bio_apos, 1)}%), e cabines abaixo de 20 s continuam praticamente inexistentes. ${int(AG.secoes_assinatura_suspeita.n)} seções combinam cabine abaixo da metade da tarde com queda de 20 p.p. na digital. O tamanho da aceleração não se associa à margem de Lula no mesmo colégio (${fmt(av.coef, 3)} p.p. por segundo, p = ${fmt(av.p, 2)}).`;
+})();
+
+// 4d. Abstenção
+(function () {
+  const AB = D.abstencao; if (!AB) return;
+  const dif = (m, g) => AB.regressao_faixas.find(r => r.modelo === m && r.variavel === g);
+  const ms = ['Nordeste, sem ajuste', 'Dentro do município', 'Dentro do colégio', 'Colégio + perfil'];
+  const lim = Object.fromEntries(AB.limite_ausentes.map(r => [r.grupo, r]));
+  document.getElementById('t-abst').innerHTML = `<thead><tr><th class="l">Grupo de seções</th><th>Seções</th><th>Aptos (média)</th><th>Abstenção</th>${ms.map(m => `<th>Dif. ${m.toLowerCase()}</th>`).join('')}<th>Após 17h pela digital</th></tr></thead><tbody>` +
+    AB.por_grupo.map(g => `<tr><td class="l">${g.grupo}</td><td>${int(g.secoes)}</td><td>${int(g.aptos_medio)}</td><td>${fmt(g.abstencao, 1)}%</td>${ms.map(m => { const r = dif(m, g.grupo); return `<td>${r ? (r.coef > 0 ? '+' : '') + fmt(r.coef, 2) + (r.p < .05 ? '' : ' (n.s.)') : 'ref.'}</td>`; }).join('')}<td>${lim[g.grupo] && lim[g.grupo].votos_apos > 1000 ? fmt(lim[g.grupo].pct_digital, 1) + '%' : '—'}</td></tr>`).join('') + '</tbody>';
+  const c = AB.regressao_continua.find(r => r.modelo === 'Colégio + perfil');
+  const g30 = AB.por_grupo.find(g => g.grupo === '30%+'), g0 = AB.por_grupo[0];
+  document.getElementById('txt-abst').textContent = `No bruto, as seções com 30%+ após 17h têm abstenção maior (${fmt(g30.abstencao, 1)}% contra ${fmt(g0.abstencao, 1)}%). No mesmo colégio e perfil, as seções com qualquer votação tardia têm abstenção cerca de meio ponto menor, sem crescer com a parcela tardia (${fmt(c.coef, 3)} p.p. por p.p.). Isso é o esperado da fila: onde mais gente comparece, mais gente sobra às 17h. Nas seções com 30%+, meio ponto equivale a menos de 2 eleitores por seção, e ${fmt(lim['30%+'].pct_digital, 1)}% dos votos após 17h passaram pela digital, que um ausente não teria como fornecer.`;
 })();
 
 // 5. Tabelas de testes
