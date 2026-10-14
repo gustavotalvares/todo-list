@@ -1,6 +1,6 @@
 """Relê só os logs das UFs pedidas e extrai o ritmo de votação (urnas/tempos.py).
 
-Uso: python coletar_tempos.py --ufs AL BA CE MA PB PE PI RN SE --saida dados/tempos
+Uso: python coletar_tempos.py --ufs AL BA CE MA PB PE PI RN SE --saida dados/tempos [--modo etapas]
 O corte local de cada município vem de dados/secoes_2026_1t.csv.gz (abertura típica + 9h).
 """
 import argparse
@@ -16,12 +16,15 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
 import coletar as C  # noqa: E402
+from urnas.etapas import parse_etapas  # noqa: E402
 from urnas.tempos import parse_tempos  # noqa: E402
 
 CORTES = {}
+MODO = {'m': 'tempos'}
 
 
-def _init(sizes, cortes):
+def _init(sizes, cortes, modo='tempos'):
+    MODO['m'] = modo
     C.SIZES.update(sizes)
     CORTES.update(cortes)
 
@@ -48,7 +51,8 @@ def task(url, uf, items):
         for i in its:
             mun, zona, sec = chave(i['name'])
             try:
-                r = parse_tempos(C.extract(raw, a, i), CORTES.get((uf, mun), 17))
+                blob = C.extract(raw, a, i)
+                r = parse_etapas(blob) if MODO['m'] == 'etapas' else parse_tempos(blob, CORTES.get((uf, mun), 17))
                 r.update({'uf': uf, 'cd_municipio': mun, 'nr_zona': zona, 'nr_secao': sec})
                 out.append(r)
             except Exception as e:  # noqa: BLE001
@@ -61,6 +65,7 @@ def main():
     ap.add_argument('--ufs', nargs='+', required=True)
     ap.add_argument('--saida', default='dados/tempos')
     ap.add_argument('--workers', type=int, default=32)
+    ap.add_argument('--modo', choices=['tempos', 'etapas'], default='tempos')
     a = ap.parse_args()
     out_dir = Path(a.saida)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -68,7 +73,7 @@ def main():
                        usecols=['uf', 'cd_municipio', 'corte_local_h'])
     cortes = {(u, int(m)): int(c) for (u, m), c in base.dropna().groupby(['uf', 'cd_municipio']).corte_local_h.first().items()}
     for uf in a.ufs:
-        dest = out_dir / f'tempos_{uf}.jsonl.gz'
+        dest = out_dir / f'{a.modo}_{uf}.jsonl.gz'
         if dest.exists():
             continue
         url = C.BASE.format(uf=uf)
@@ -87,7 +92,7 @@ def main():
             tasks.append(curt)
         t0 = time.time()
         rows, errs = [], []
-        with cf.ProcessPoolExecutor(a.workers, initializer=_init, initargs=(dict(C.SIZES), cortes)) as ex:
+        with cf.ProcessPoolExecutor(a.workers, initializer=_init, initargs=(dict(C.SIZES), cortes, a.modo)) as ex:
             for f in cf.as_completed([ex.submit(task, url, uf, t) for t in tasks]):
                 r, e = f.result()
                 rows += r

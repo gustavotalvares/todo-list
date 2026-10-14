@@ -29,6 +29,11 @@ def main():
     th = AQUI / 'resultados' / 'nordeste' / 'teste_hora.json'
     if th.exists():
         r['teste_hora'] = json.loads(th.read_text())
+    ag = AQUI / 'resultados' / 'nordeste' / 'agilidade.json'
+    if ag.exists():
+        a = json.loads(ag.read_text())
+        a['secoes_assinatura_suspeita'].pop('lista', None)
+        r['agilidade'] = a
     tpl = (AQUI / 'painel_nordeste_template.html').read_text()
     css = re.search(r'<style>.*?</style>', (AQUI / 'painel_template.html').read_text(), re.S).group(0)
     html = tpl.replace('/*__CSS__*/', css).replace(

@@ -79,6 +79,16 @@
   </section>
 
   <section>
+    <div class="eyebrow">4c · Agilidade depois das 17h</div>
+    <h2>O tempo de cabine encurta o dia inteiro, em todas as seções</h2>
+    <p class="note">Tempo médio na cabine (da habilitação ao voto computado), por hora, nos mesmos quatro grupos de seções. Votos
+      digitados sem eleitor apareceriam como cabines muito curtas, menos digital e mais liberação pelo mesário a partir das 17h.</p>
+    <div class="chart"><div class="legend" id="leg-cab"></div><svg id="c-cab"></svg></div>
+    <div class="tablewrap"><table id="t-cab"></table></div>
+    <p class="note" id="txt-cab"></p>
+  </section>
+
+  <section>
     <div class="eyebrow">5 · Estados e municípios</div>
     <h2>Testes locais</h2>
     <div class="grid2">
@@ -283,6 +293,35 @@ document.getElementById('conclusoes').innerHTML = [
   });
   const m = Object.fromEntries(T.por_hora[specs[0]].map(r => [r.bloco, r.coef])), c = Object.fromEntries(T.por_hora[specs[1]].map(r => [r.bloco, r.coef]));
   document.getElementById('txt-hora').textContent = `Dentro do município, a associação já sobe de ${fmt(m['8h–10h'], 2)} (8h–10h) para ${fmt(m['15h–16h'], 2)} (15h–16h), antes de qualquer voto tardio: quem vota mais tarde no dia tende a votar mais em Lula. No mesmo colégio com mesmo perfil, 17h–18h (${fmt(c['17h–18h'], 3)}) fica no nível de 14h–15h (${fmt(c['14h–15h'], 3)}). Mesmo atribuindo toda a associação aos votos tardios, o efeito máximo seria de cerca de ${int(T.impacto_maximo_votos_margem)} votos de margem em todo o Nordeste.`;
+})();
+
+// 4c. Agilidade
+(function () {
+  const AG = D.agilidade; if (!AG) return;
+  const nomes = Object.keys(AG.grupos), cols = ['var(--o1)', 'var(--o2)', 'var(--o3)', 'var(--o4)'];
+  document.getElementById('leg-cab').innerHTML = nomes.map((k, i) => `<span><i style="background:${cols[i]}"></i>${k} após 17h</span>`).join('');
+  const hrs = []; for (let h = 8; h <= 20; h++) hrs.push(h);
+  const svg = document.getElementById('c-cab'), W = 960, H = 300, left = 48, right = 16, top = 12, bottom = 30;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const ok = (k, h) => AG.grupos[k].por_hora[h].atendimentos >= 1000;
+  const vals = nomes.flatMap(k => hrs.filter(h => ok(k, h)).map(h => AG.grupos[k].por_hora[h].cabine_s));
+  const lo = 0, hi = Math.max(...vals) * 1.08;
+  const x = h => left + (h - 8) / 13 * (W - left - right), y = v => H - bottom - (v - lo) / (hi - lo) * (H - bottom - top);
+  ticks(lo, hi, 5).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: 'var(--grid)'}, svg); el('text', {x: left - 8, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = int(t) + ' s'; });
+  hrs.forEach(h => el('text', {x: x(h + .5), y: H - 10, 'text-anchor': 'middle'}, svg).textContent = h + 'h');
+  el('rect', {x: x(17), y: top, width: x(21) - x(17), height: H - bottom - top, fill: 'var(--wash)'}, svg);
+  nomes.forEach((k, i) => {
+    const hs = hrs.filter(h => ok(k, h)), pts = hs.map(h => [x(h + .5), y(AG.grupos[k].por_hora[h].cabine_s)]);
+    el('path', {d: pts.map((p, j) => (j ? 'L' : 'M') + p[0] + ',' + p[1]).join(''), fill: 'none', stroke: cols[i], 'stroke-width': 2}, svg);
+    hs.forEach((h, j) => { const ph = AG.grupos[k].por_hora[h]; const c = el('circle', {cx: pts[j][0], cy: pts[j][1], r: 4, fill: cols[i], stroke: 'var(--surface)', 'stroke-width': 2}, svg); hover(c, `<b>${k} após 17h · ${h}h</b><br>Cabine: ${fmt(ph.cabine_s, 1)} s<br>Identificação: ${fmt(ph.identificacao_s, 1)} s<br>Digital: ${fmt(ph.pct_biometria, 1)}% · mesário: ${fmt(ph.pct_mesario, 1)}%<br>${int(ph.atendimentos)} atendimentos`); });
+  });
+  const g = AG.grupos[nomes[3]].por_hora;
+  const hs = [8, 10, 12, 14, 15, 16, 17, 18, 19];
+  document.getElementById('t-cab').innerHTML = `<thead><tr><th class="l">Seções com 30%+ após 17h</th>${hs.map(h => `<th>${h}h</th>`).join('')}</tr></thead><tbody>` +
+    [['Cabine (s)', 'cabine_s', 0], ['Identificação (s)', 'identificacao_s', 0], ['Urna ociosa (s)', 'ociosidade_s', 0], ['Pela digital (%)', 'pct_biometria', 1], ['Liberado pelo mesário (%)', 'pct_mesario', 1], ['Cabine < 30 s (%)', 'pct_cabine_menos_30s', 1]]
+      .map(([l, k, dd]) => `<tr><td class="l">${l}</td>${hs.map(h => `<td>${fmt(g[h][k], dd)}</td>`).join('')}</tr>`).join('') + '</tbody>';
+  const S = AG.dentro_da_secao, dc = AG.decomposicao_s, av = AG.acel_vs_margem.find(r => r.modelo === 'Dentro do colégio' && r.variavel === 'acel_cabine');
+  document.getElementById('txt-cab').textContent = `Nas ${int(S.secoes)} seções com mais de 10% após 17h, a cabine passa de ${fmt(S.mediana.cab_tarde, 0)} s (14h–17h) para ${fmt(S.mediana.cab_apos, 0)} s depois das 17h (medianas). A queda continua uma tendência que começa às 8h em todos os grupos, inclusive nas seções que fecharam no horário. Depois das 17h a parcela identificada pela digital sobe (${fmt(S.mediana.bio_tarde, 1)}% → ${fmt(S.mediana.bio_apos, 1)}%), e cabines abaixo de 20 s continuam praticamente inexistentes. ${int(AG.secoes_assinatura_suspeita.n)} seções combinam cabine abaixo da metade da tarde com queda de 20 p.p. na digital. O tamanho da aceleração não se associa à margem de Lula no mesmo colégio (${fmt(av.coef, 3)} p.p. por segundo, p = ${fmt(av.p, 2)}).`;
 })();
 
 // 5. Tabelas de testes

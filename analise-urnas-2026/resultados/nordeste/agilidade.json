@@ -1,0 +1,663 @@
+{
+ "secoes": 140076,
+ "grupos": {
+  "Sem votos após 17h": {
+   "secoes": 49357,
+   "por_hora": {
+    "8": {
+     "atendimentos": 1082868.0,
+     "ociosidade_s": 32.970630769401254,
+     "identificacao_s": 28.904365998441175,
+     "cabine_s": 87.03769896238508,
+     "pct_biometria": 88.07066050525087,
+     "pct_mesario": 6.295042424376748,
+     "tentativas": 1.6386466309836472,
+     "pct_cabine_menos_20s": 0.1663175936494568,
+     "pct_cabine_menos_30s": 0.8768381741818947
+    },
+    "9": {
+     "atendimentos": 1240375.0,
+     "ociosidade_s": 27.635798851153886,
+     "identificacao_s": 24.738372669555577,
+     "cabine_s": 82.08998165877254,
+     "pct_biometria": 88.37488662702812,
+     "pct_mesario": 5.609593872820719,
+     "tentativas": 1.5846997883704526,
+     "pct_cabine_menos_20s": 0.19494104605462056,
+     "pct_cabine_menos_30s": 0.9560012093117001
+    },
+    "10": {
+     "atendimentos": 1311525.0,
+     "ociosidade_s": 27.35671832408837,
+     "identificacao_s": 23.132554087798557,
+     "cabine_s": 76.46030841958789,
+     "pct_biometria": 89.00531823640418,
+     "pct_mesario": 4.854120203579802,
+     "tentativas": 1.5317717923791008,
+     "pct_cabine_menos_20s": 0.20975581860810888,
+     "pct_cabine_menos_30s": 1.0239225329292236
+    },
+    "11": {
+     "atendimentos": 1313974.0,
+     "ociosidade_s": 31.772497781539055,
+     "identificacao_s": 22.11042303728993,
+     "cabine_s": 71.48388095959281,
+     "pct_biometria": 89.5698088394443,
+     "pct_mesario": 4.187449675564356,
+     "tentativas": 1.4859388389724606,
+     "pct_cabine_menos_20s": 0.2115719184702285,
+     "pct_cabine_menos_30s": 1.1048924864571141
+    },
+    "12": {
+     "atendimentos": 1225227.0,
+     "ociosidade_s": 41.30412976534144,
+     "identificacao_s": 22.175370768029108,
+     "cabine_s": 69.089134503239,
+     "pct_biometria": 89.73879942247437,
+     "pct_mesario": 3.8205981422218085,
+     "tentativas": 1.4623894184506219,
+     "pct_cabine_menos_20s": 0.22338717641710476,
+     "pct_cabine_menos_30s": 1.1744762399130937
+    },
+    "13": {
+     "atendimentos": 1147557.0,
+     "ociosidade_s": 47.86809282676155,
+     "identificacao_s": 22.80679478230711,
+     "cabine_s": 70.39951479534349,
+     "pct_biometria": 89.53211038754502,
+     "pct_mesario": 3.875537337143166,
+     "tentativas": 1.4737795159630416,
+     "pct_cabine_menos_20s": 0.19920579108488728,
+     "pct_cabine_menos_30s": 1.0796849306831817
+    },
+    "14": {
+     "atendimentos": 1124002.0,
+     "ociosidade_s": 48.570558593312114,
+     "identificacao_s": 22.817103528285536,
+     "cabine_s": 73.03336026092481,
+     "pct_biometria": 89.30891582043449,
+     "pct_mesario": 3.9947437815946945,
+     "tentativas": 1.482588109273827,
+     "pct_cabine_menos_20s": 0.17953704708710483,
+     "pct_cabine_menos_30s": 0.9483079211602826
+    },
+    "15": {
+     "atendimentos": 1123205.0,
+     "ociosidade_s": 48.11780752400497,
+     "identificacao_s": 22.582503639139784,
+     "cabine_s": 74.06544397505353,
+     "pct_biometria": 89.26812113550065,
+     "pct_mesario": 4.051264016809042,
+     "tentativas": 1.480855231235616,
+     "pct_cabine_menos_20s": 0.13692958987896242,
+     "pct_cabine_menos_30s": 0.8459720175747081
+    },
+    "16": {
+     "atendimentos": 912636.0,
+     "ociosidade_s": 60.71236177402601,
+     "identificacao_s": 22.00288504946112,
+     "cabine_s": 72.09948654227972,
+     "pct_biometria": 89.42064525177618,
+     "pct_mesario": 3.6659741671378296,
+     "tentativas": 1.4461713103581275,
+     "pct_cabine_menos_20s": 0.11724279997720888,
+     "pct_cabine_menos_30s": 0.940900862994666
+    },
+    "17": {
+     "atendimentos": 38.0,
+     "ociosidade_s": 157.76315789473685,
+     "identificacao_s": 27.92105263157895,
+     "cabine_s": 77.10526315789474,
+     "pct_biometria": 89.47368421052632,
+     "pct_mesario": 10.526315789473683,
+     "tentativas": 1.7894736842105263,
+     "pct_cabine_menos_20s": 0.0,
+     "pct_cabine_menos_30s": 0.0
+    },
+    "18": {
+     "atendimentos": 0.0,
+     "ociosidade_s": NaN,
+     "identificacao_s": NaN,
+     "cabine_s": NaN,
+     "pct_biometria": NaN,
+     "pct_mesario": NaN,
+     "tentativas": NaN,
+     "pct_cabine_menos_20s": null,
+     "pct_cabine_menos_30s": null
+    },
+    "19": {
+     "atendimentos": 0.0,
+     "ociosidade_s": NaN,
+     "identificacao_s": NaN,
+     "cabine_s": NaN,
+     "pct_biometria": NaN,
+     "pct_mesario": NaN,
+     "tentativas": NaN,
+     "pct_cabine_menos_20s": null,
+     "pct_cabine_menos_30s": null
+    },
+    "20": {
+     "atendimentos": 0.0,
+     "ociosidade_s": NaN,
+     "identificacao_s": NaN,
+     "cabine_s": NaN,
+     "pct_biometria": NaN,
+     "pct_mesario": NaN,
+     "tentativas": NaN,
+     "pct_cabine_menos_20s": null,
+     "pct_cabine_menos_30s": null
+    }
+   }
+  },
+  "Até 10%": {
+   "secoes": 57560,
+   "por_hora": {
+    "8": {
+     "atendimentos": 1316477.0,
+     "ociosidade_s": 29.216381296444982,
+     "identificacao_s": 28.099312787082493,
+     "cabine_s": 86.47442530329053,
+     "pct_biometria": 87.77016233477684,
+     "pct_mesario": 6.037629217981021,
+     "tentativas": 1.6216766415212722,
+     "pct_cabine_menos_20s": 0.0717824922121693,
+     "pct_cabine_menos_30s": 0.8575918910850703
+    },
+    "9": {
+     "atendimentos": 1523895.0,
+     "ociosidade_s": 22.9306645142874,
+     "identificacao_s": 23.983294124595197,
+     "cabine_s": 81.67276879312551,
+     "pct_biometria": 88.02719347461603,
+     "pct_mesario": 5.363689755527775,
+     "tentativas": 1.5665344397087726,
+     "pct_cabine_menos_20s": 0.08543895740848287,
+     "pct_cabine_menos_30s": 0.9678488347294268
+    },
+    "10": {
+     "atendimentos": 1629891.0,
+     "ociosidade_s": 21.613071671663935,
+     "identificacao_s": 22.503835532560153,
+     "cabine_s": 76.47860685162382,
+     "pct_biometria": 88.47916823885768,
+     "pct_mesario": 4.673932183195072,
+     "tentativas": 1.5159878789440522,
+     "pct_cabine_menos_20s": 0.08994466501134125,
+     "pct_cabine_menos_30s": 1.0285963908015934
+    },
+    "11": {
+     "atendimentos": 1713101.0,
+     "ociosidade_s": 22.134518630250057,
+     "identificacao_s": 21.30850486924005,
+     "cabine_s": 71.23485071808375,
+     "pct_biometria": 89.0189778652864,
+     "pct_mesario": 3.96976010171029,
+     "tentativas": 1.4658172518724815,
+     "pct_cabine_menos_20s": 0.09158829514430264,
+     "pct_cabine_menos_30s": 1.103554314660957
+    },
+    "12": {
+     "atendimentos": 1716272.0,
+     "ociosidade_s": 24.796993716613684,
+     "identificacao_s": 21.01223232681067,
+     "cabine_s": 68.00753610150372,
+     "pct_biometria": 89.15737132575721,
+     "pct_mesario": 3.5537490560936726,
+     "tentativas": 1.436447136584411,
+     "pct_cabine_menos_20s": 0.09316705044421864,
+     "pct_cabine_menos_30s": 1.189321972274791
+    },
+    "13": {
+     "atendimentos": 1676075.0,
+     "ociosidade_s": 26.811158211893858,
+     "identificacao_s": 21.247471622689915,
+     "cabine_s": 67.92595677401071,
+     "pct_biometria": 89.08282743910625,
+     "pct_mesario": 3.4675059290306223,
+     "tentativas": 1.4351905493489254,
+     "pct_cabine_menos_20s": 0.09522246916158286,
+     "pct_cabine_menos_30s": 1.1797204779022419
+    },
+    "14": {
+     "atendimentos": 1655499.0,
+     "ociosidade_s": 26.361234890507333,
+     "identificacao_s": 21.38561666301218,
+     "cabine_s": 70.00098036906093,
+     "pct_biometria": 88.8022886150943,
+     "pct_mesario": 3.676414180860273,
+     "tentativas": 1.4483741760037305,
+     "pct_cabine_menos_20s": 0.08269410008704324,
+     "pct_cabine_menos_30s": 1.0684391835935871
+    },
+    "15": {
+     "atendimentos": 1675903.0,
+     "ociosidade_s": 24.24489126160643,
+     "identificacao_s": 21.150703232824334,
+     "cabine_s": 71.4825947563791,
+     "pct_biometria": 88.6406910185136,
+     "pct_mesario": 3.7627476053208326,
+     "tentativas": 1.4506537669542927,
+     "pct_cabine_menos_20s": 0.07345293850539082,
+     "pct_cabine_menos_30s": 1.0108580269860488
+    },
+    "16": {
+     "atendimentos": 1715962.0,
+     "ociosidade_s": 22.987742152798255,
+     "identificacao_s": 20.237395699904777,
+     "cabine_s": 69.32095174601768,
+     "pct_biometria": 88.83739849716952,
+     "pct_mesario": 3.454447126451518,
+     "tentativas": 1.4205087292142833,
+     "pct_cabine_menos_20s": 0.06631848490817396,
+     "pct_cabine_menos_30s": 1.1522982443667167
+    },
+    "17": {
+     "atendimentos": 603949.0,
+     "ociosidade_s": 23.473068090186423,
+     "identificacao_s": 19.227434766842897,
+     "cabine_s": 66.50259872936292,
+     "pct_biometria": 88.8474026780407,
+     "pct_mesario": 3.0085321773858387,
+     "tentativas": 1.3823600999422136,
+     "pct_cabine_menos_20s": 0.05662729800032784,
+     "pct_cabine_menos_30s": 1.3272643882182105
+    },
+    "18": {
+     "atendimentos": 262.0,
+     "ociosidade_s": 165.60687022900763,
+     "identificacao_s": 22.64885496183206,
+     "cabine_s": 80.07633587786259,
+     "pct_biometria": 79.38931297709924,
+     "pct_mesario": 4.580152671755725,
+     "tentativas": 1.4045801526717556,
+     "pct_cabine_menos_20s": 0.0,
+     "pct_cabine_menos_30s": 0.7633587786259542
+    },
+    "19": {
+     "atendimentos": 4.0,
+     "ociosidade_s": 440.25,
+     "identificacao_s": 21.5,
+     "cabine_s": 63.0,
+     "pct_biometria": 100.0,
+     "pct_mesario": 0.0,
+     "tentativas": 1.5,
+     "pct_cabine_menos_20s": 0.0,
+     "pct_cabine_menos_30s": 0.0
+    },
+    "20": {
+     "atendimentos": 0.0,
+     "ociosidade_s": NaN,
+     "identificacao_s": NaN,
+     "cabine_s": NaN,
+     "pct_biometria": NaN,
+     "pct_mesario": NaN,
+     "tentativas": NaN,
+     "pct_cabine_menos_20s": null,
+     "pct_cabine_menos_30s": null
+    }
+   }
+  },
+  "10–30%": {
+   "secoes": 31961,
+   "por_hora": {
+    "8": {
+     "atendimentos": 648467.0,
+     "ociosidade_s": 31.436936652134957,
+     "identificacao_s": 31.643679632116978,
+     "cabine_s": 96.86999492649588,
+     "pct_biometria": 86.24679436270466,
+     "pct_mesario": 6.927569174684294,
+     "tentativas": 1.7027790157401996,
+     "pct_cabine_menos_20s": 0.03207564918492383,
+     "pct_cabine_menos_30s": 0.5317155691808527
+    },
+    "9": {
+     "atendimentos": 751909.0,
+     "ociosidade_s": 24.464694530854132,
+     "identificacao_s": 26.97900809805442,
+     "cabine_s": 92.90418255400587,
+     "pct_biometria": 86.48772657329545,
+     "pct_mesario": 6.333878168767764,
+     "tentativas": 1.6563666613912056,
+     "pct_cabine_menos_20s": 0.043356310404583535,
+     "pct_cabine_menos_30s": 0.6244106667163181
+    },
+    "10": {
+     "atendimentos": 806307.0,
+     "ociosidade_s": 22.696212484822777,
+     "identificacao_s": 25.252929715356558,
+     "cabine_s": 87.50278491939174,
+     "pct_biometria": 87.0892848505594,
+     "pct_mesario": 5.586829830325174,
+     "tentativas": 1.606610137329826,
+     "pct_cabine_menos_20s": 0.03571840502438897,
+     "pct_cabine_menos_30s": 0.6914239861491963
+    },
+    "11": {
+     "atendimentos": 865886.0,
+     "ociosidade_s": 21.69574516737769,
+     "identificacao_s": 23.793437011338675,
+     "cabine_s": 81.21123103965188,
+     "pct_biometria": 87.64791208080509,
+     "pct_mesario": 4.862880332976858,
+     "tentativas": 1.5507919056319193,
+     "pct_cabine_menos_20s": 0.04550252573664432,
+     "pct_cabine_menos_30s": 0.7496367882146149
+    },
+    "12": {
+     "atendimentos": 911147.0,
+     "ociosidade_s": 21.477151326844076,
+     "identificacao_s": 22.880133502058396,
+     "cabine_s": 75.85465792018192,
+     "pct_biometria": 88.10279790198507,
+     "pct_mesario": 4.25134473361598,
+     "tentativas": 1.5060368963515218,
+     "pct_cabine_menos_20s": 0.03929113523942898,
+     "pct_cabine_menos_30s": 0.8408083437688979
+    },
+    "13": {
+     "atendimentos": 926375.0,
+     "ociosidade_s": 21.18943300499258,
+     "identificacao_s": 22.73665848063689,
+     "cabine_s": 73.93622884900823,
+     "pct_biometria": 88.13234381325057,
+     "pct_mesario": 4.029793550128188,
+     "tentativas": 1.4947596815544462,
+     "pct_cabine_menos_20s": 0.046093644582377545,
+     "pct_cabine_menos_30s": 0.8821481581433005
+    },
+    "14": {
+     "atendimentos": 923899.0,
+     "ociosidade_s": 20.48726213579623,
+     "identificacao_s": 22.703308478524168,
+     "cabine_s": 75.11468244905558,
+     "pct_biometria": 87.94316261842474,
+     "pct_mesario": 4.176214066689108,
+     "tentativas": 1.5051461252799279,
+     "pct_cabine_menos_20s": 0.03625937467190678,
+     "pct_cabine_menos_30s": 0.8794251319678883
+    },
+    "15": {
+     "atendimentos": 927019.0,
+     "ociosidade_s": 19.648184125675957,
+     "identificacao_s": 22.39584949175799,
+     "cabine_s": 76.2998385146367,
+     "pct_biometria": 87.80456495497934,
+     "pct_mesario": 4.282544370719478,
+     "tentativas": 1.5071665197800692,
+     "pct_cabine_menos_20s": 0.038834155502745896,
+     "pct_cabine_menos_30s": 0.8476633165016035
+    },
+    "16": {
+     "atendimentos": 965143.0,
+     "ociosidade_s": 18.779473093624468,
+     "identificacao_s": 21.316991368118508,
+     "cabine_s": 73.93583437894695,
+     "pct_biometria": 88.2605997246004,
+     "pct_mesario": 3.921698649837382,
+     "tentativas": 1.4760527714545928,
+     "pct_cabine_menos_20s": 0.036782114153032244,
+     "pct_cabine_menos_30s": 0.923697317392345
+    },
+    "17": {
+     "atendimentos": 1047481.0,
+     "ociosidade_s": 17.26722489477136,
+     "identificacao_s": 19.117002599569826,
+     "cabine_s": 66.58594666633572,
+     "pct_biometria": 89.00199621759249,
+     "pct_mesario": 3.1145194996377024,
+     "tentativas": 1.4070870975225327,
+     "pct_cabine_menos_20s": 0.03560923778092395,
+     "pct_cabine_menos_30s": 1.0751507664578164
+    },
+    "18": {
+     "atendimentos": 433758.0,
+     "ociosidade_s": 17.57491504479456,
+     "identificacao_s": 19.3213888850465,
+     "cabine_s": 66.37465821956022,
+     "pct_biometria": 88.70130349180879,
+     "pct_mesario": 3.12547549555282,
+     "tentativas": 1.4121975848284065,
+     "pct_cabine_menos_20s": 0.03780910092724515,
+     "pct_cabine_menos_30s": 1.0107018199087971
+    },
+    "19": {
+     "atendimentos": 51028.0,
+     "ociosidade_s": 18.928470643568236,
+     "identificacao_s": 20.648330328447127,
+     "cabine_s": 69.30348044211021,
+     "pct_biometria": 87.7126283608999,
+     "pct_mesario": 3.4588853178647017,
+     "tentativas": 1.4555930077604453,
+     "pct_cabine_menos_20s": 0.02351650074468919,
+     "pct_cabine_menos_30s": 0.6682605628282512
+    },
+    "20": {
+     "atendimentos": 551.0,
+     "ociosidade_s": 22.504537205081668,
+     "identificacao_s": 22.82940108892922,
+     "cabine_s": 71.25771324863884,
+     "pct_biometria": 84.93647912885662,
+     "pct_mesario": 4.900181488203267,
+     "tentativas": 1.5553539019963702,
+     "pct_cabine_menos_20s": 0.0,
+     "pct_cabine_menos_30s": 0.9074410163339383
+    }
+   }
+  },
+  "30%+": {
+   "secoes": 1198,
+   "por_hora": {
+    "8": {
+     "atendimentos": 19021.0,
+     "ociosidade_s": 38.69370695547027,
+     "identificacao_s": 40.26849271857421,
+     "cabine_s": 114.04190105672677,
+     "pct_biometria": 82.6717838178855,
+     "pct_mesario": 8.096314599653015,
+     "tentativas": 1.8598391251774355,
+     "pct_cabine_menos_20s": 0.010514694285263656,
+     "pct_cabine_menos_30s": 0.14720571999369117
+    },
+    "9": {
+     "atendimentos": 22588.0,
+     "ociosidade_s": 30.550823446077562,
+     "identificacao_s": 33.71763768372587,
+     "cabine_s": 113.16092615548078,
+     "pct_biometria": 82.45971312201169,
+     "pct_mesario": 7.836019125199221,
+     "tentativas": 1.834735257658934,
+     "pct_cabine_menos_20s": 0.017708517797060386,
+     "pct_cabine_menos_30s": 0.22578360191251992
+    },
+    "10": {
+     "atendimentos": 23970.0,
+     "ociosidade_s": 28.003212348769296,
+     "identificacao_s": 31.81935753024614,
+     "cabine_s": 108.06174384647476,
+     "pct_biometria": 83.32916145181477,
+     "pct_mesario": 7.113057989153108,
+     "tentativas": 1.8043804755944932,
+     "pct_cabine_menos_20s": 0.008343763037129746,
+     "pct_cabine_menos_30s": 0.2586566541510221
+    },
+    "11": {
+     "atendimentos": 25527.0,
+     "ociosidade_s": 26.344772201982217,
+     "identificacao_s": 30.040584479178907,
+     "cabine_s": 103.25733537039213,
+     "pct_biometria": 84.03259294080777,
+     "pct_mesario": 6.5146707407842674,
+     "tentativas": 1.759548713127277,
+     "pct_cabine_menos_20s": 0.015669683080659694,
+     "pct_cabine_menos_30s": 0.4387511262584714
+    },
+    "12": {
+     "atendimentos": 27196.0,
+     "ociosidade_s": 25.494594793351965,
+     "identificacao_s": 28.977239299897043,
+     "cabine_s": 96.09714663921164,
+     "pct_biometria": 84.86909839682306,
+     "pct_mesario": 5.964112369466098,
+     "tentativas": 1.718267392263568,
+     "pct_cabine_menos_20s": 0.011031033975584645,
+     "pct_cabine_menos_30s": 0.33828504191792913
+    },
+    "13": {
+     "atendimentos": 27836.0,
+     "ociosidade_s": 24.98440867940796,
+     "identificacao_s": 28.23807299899411,
+     "cabine_s": 92.59185946256646,
+     "pct_biometria": 85.2744647219428,
+     "pct_mesario": 5.58629113378359,
+     "tentativas": 1.6888561574938927,
+     "pct_cabine_menos_20s": 0.0035924701824974854,
+     "pct_cabine_menos_30s": 0.37002442879724096
+    },
+    "14": {
+     "atendimentos": 28417.0,
+     "ociosidade_s": 23.839075201463913,
+     "identificacao_s": 27.420945208853855,
+     "cabine_s": 91.85779638948517,
+     "pct_biometria": 85.135658232748,
+     "pct_mesario": 5.802864482528064,
+     "tentativas": 1.678678255973537,
+     "pct_cabine_menos_20s": 0.0035190203047471584,
+     "pct_cabine_menos_30s": 0.3659781116937045
+    },
+    "15": {
+     "atendimentos": 29130.0,
+     "ociosidade_s": 22.914177823549604,
+     "identificacao_s": 26.636079642979745,
+     "cabine_s": 90.89766563680055,
+     "pct_biometria": 85.24545142464814,
+     "pct_mesario": 5.623069001029866,
+     "tentativas": 1.6629248197734294,
+     "pct_cabine_menos_20s": 0.0034328870580157913,
+     "pct_cabine_menos_30s": 0.3604531410916581
+    },
+    "16": {
+     "atendimentos": 30359.0,
+     "ociosidade_s": 21.81810995092065,
+     "identificacao_s": 25.280279324088408,
+     "cabine_s": 87.59554003755065,
+     "pct_biometria": 86.05355907638591,
+     "pct_mesario": 5.174742251062288,
+     "tentativas": 1.6201126519318818,
+     "pct_cabine_menos_20s": 0.009881748410685464,
+     "pct_cabine_menos_30s": 0.44467867848084586
+    },
+    "17": {
+     "atendimentos": 33542.0,
+     "ociosidade_s": 20.289070419175957,
+     "identificacao_s": 22.787669190865184,
+     "cabine_s": 80.23090453759465,
+     "pct_biometria": 87.18621429849145,
+     "pct_mesario": 4.388527815872637,
+     "tentativas": 1.5674080257587502,
+     "pct_cabine_menos_20s": 0.005962673662870431,
+     "pct_cabine_menos_30s": 0.4412378510524119
+    },
+    "18": {
+     "atendimentos": 36543.0,
+     "ociosidade_s": 18.346796924171525,
+     "identificacao_s": 21.220288427332186,
+     "cabine_s": 73.65725309908875,
+     "pct_biometria": 87.87455873901978,
+     "pct_mesario": 3.9460361765591223,
+     "tentativas": 1.5265030238349342,
+     "pct_cabine_menos_20s": 0.005473004405768546,
+     "pct_cabine_menos_30s": 0.5363544317653176
+    },
+    "19": {
+     "atendimentos": 34561.0,
+     "ociosidade_s": 18.32305199502329,
+     "identificacao_s": 20.739301524840137,
+     "cabine_s": 71.5287462747027,
+     "pct_biometria": 87.7318364630653,
+     "pct_mesario": 3.608113191169237,
+     "tentativas": 1.5009403663088452,
+     "pct_cabine_menos_20s": 0.005786869592893724,
+     "pct_cabine_menos_30s": 0.49767078498886025
+    },
+    "20": {
+     "atendimentos": 12170.0,
+     "ociosidade_s": 19.87000821692687,
+     "identificacao_s": 21.96483155299918,
+     "cabine_s": 72.21626951520132,
+     "pct_biometria": 86.86935086277731,
+     "pct_mesario": 3.7387017255546424,
+     "tentativas": 1.5461791290057518,
+     "pct_cabine_menos_20s": 0.008216926869350863,
+     "pct_cabine_menos_30s": 0.5587510271158587
+    }
+   }
+  }
+ },
+ "dentro_da_secao": {
+  "secoes": 33159,
+  "mediana": {
+   "cab_tarde": 75.73493975903614,
+   "cab_apos": 65.90588235294118,
+   "ident_tarde": 21.7375,
+   "ident_apos": 18.566265060240966,
+   "ocio_tarde": 19.275862068965516,
+   "ocio_apos": 16.942028985507246,
+   "bio_tarde": 88.88888888888889,
+   "bio_apos": 90.14084507042253,
+   "curta_apos": 0.0,
+   "curta_tarde": 0.0
+  },
+  "pct_secoes_cabine_mais_rapida": 86.46521306432643,
+  "pct_secoes_ocio_menor": 77.9999396845502
+ },
+ "decomposicao_s": {
+  "ocio": -2.6079609396941037,
+  "ident": -3.4222011561881645,
+  "cab": -10.353422327118377
+ },
+ "secoes_assinatura_suspeita": {
+  "criterio": "cabine após 17h < metade da cabine 14h–17h E biometria após 17h 20+ p.p. abaixo",
+  "n": 0,
+  "lista": []
+ },
+ "secoes_cabine_curta_apos_30pct": 1,
+ "acel_vs_margem": [
+  {
+   "modelo": "Dentro do município",
+   "variavel": "acel_cabine",
+   "coef": -0.021783821305744605,
+   "ep": 0.0073028159394228015,
+   "p": 0.002895739882477196,
+   "secoes": 33156
+  },
+  {
+   "modelo": "Dentro do município",
+   "variavel": "queda_bio",
+   "coef": 0.008306399438374629,
+   "ep": 0.009879394202556955,
+   "p": 0.40058957736772044,
+   "secoes": 33156
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "acel_cabine",
+   "coef": -0.008329900959694648,
+   "ep": 0.0047663283661553285,
+   "p": 0.08070462972057955,
+   "secoes": 33156
+  },
+  {
+   "modelo": "Dentro do colégio",
+   "variavel": "queda_bio",
+   "coef": -0.000996385652958858,
+   "ep": 0.006999509405476599,
+   "p": 0.8868198429758708,
+   "secoes": 33156
+  }
+ ],
+ "acel_vs_margem_dp": {
+  "acel_cabine": 9.767793266504038,
+  "queda_bio": 6.15620717961987
+ }
+}
