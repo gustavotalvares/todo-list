@@ -105,17 +105,23 @@ def decode_bu(data):
 
     d['comparecimento'] = nonneg(inner[6])
     det = inner[7]
-    if det[0] != 161:
-        raise FormatoInesperado('detalhamento de comparecimento ausente')
-    sem_bio, bio, biografia = map(nonneg, children(det[1]))
-    if sem_bio + bio + biografia != d['comparecimento']:
-        raise FormatoInesperado('detalhamento não soma o comparecimento')
+    if det[0] == 161:
+        sem_bio, bio, biografia = map(nonneg, children(det[1]))
+        if sem_bio + bio + biografia != d['comparecimento']:
+            raise FormatoInesperado('detalhamento não soma o comparecimento')
+        eleicoes = inner[8]
+    elif det[0] == 48:
+        # Sem detalhamento (ex.: seções no exterior, sem identificação biométrica)
+        sem_bio = bio = biografia = None
+        eleicoes = det
+    else:
+        raise FormatoInesperado('detalhamento de comparecimento inesperado')
     d['sem_biometria'] = sem_bio          # sem biometria cadastrada
     d['hab_biometria'] = bio              # habilitado pela digital
     d['hab_biografia'] = biografia        # tinha biometria, liberado por dados pessoais
 
     found = []
-    for e in children(inner[8][1]):
+    for e in children(eleicoes[1]):
         a = children(e[1])
         aptos = nonneg(a[1])
         for result in children(a[4][1]):
