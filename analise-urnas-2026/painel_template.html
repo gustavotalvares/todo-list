@@ -1,0 +1,346 @@
+<title>Urnas 2026: biometria e horário</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: relatório técnico em coluna única (~1040px); cada bloco = pergunta → gráfico → leitura. */
+:root {
+  --bg: #f6f7f8; --surface: #fcfcfb; --ink: #0f1419; --ink-2: #4a5159; --muted: #80868d;
+  --grid: #e1e3e5; --axis: #c2c6ca; --ring: rgba(15,20,25,.10); --accent: #1c5cab;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --wash: rgba(42,120,214,.10);
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1012; --surface: #17191b; --ink: #eef0f1; --ink-2: #bfc4c8; --muted: #8a9095;
+  --grid: #2a2d30; --axis: #3a3e42; --ring: rgba(255,255,255,.10); --accent: #6da7ec;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --wash: rgba(57,135,229,.16); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1012; --surface: #17191b; --ink: #eef0f1; --ink-2: #bfc4c8; --muted: #8a9095;
+  --grid: #2a2d30; --axis: #3a3e42; --ring: rgba(255,255,255,.10); --accent: #6da7ec;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --wash: rgba(57,135,229,.16); color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 15px/1.6 var(--f-body); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px; display: grid; gap: 40px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; letter-spacing: -.01em; }
+h2 { font-size: 22px; font-weight: 700; }
+h3 { font-size: 15px; font-weight: 700; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font: 500 12px/1.4 var(--f-data); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--ink-2); font-size: 17px; }
+header { display: grid; gap: 12px; }
+section { display: grid; gap: 16px; min-width: 0; }
+.note { color: var(--ink-2); font-size: 14px; }
+.warn { border-left: 3px solid var(--s2); padding: 10px 14px; background: var(--surface); border-radius: 0 6px 6px 0;
+  box-shadow: 0 0 0 1px var(--ring); font-size: 14px; color: var(--ink-2); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); box-shadow: 0 0 0 1px var(--ring); border-radius: 8px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.tile .v { font: 700 28px/1.1 var(--f-display); }
+.tile .k { font-size: 13px; color: var(--ink-2); }
+.tile .d { font: 12px/1.4 var(--f-data); color: var(--muted); }
+.chart { background: var(--surface); box-shadow: 0 0 0 1px var(--ring); border-radius: 8px; padding: 16px; min-width: 0; overflow-x: auto; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { font-family: var(--f-data); font-size: 11px; fill: var(--muted); }
+.chart text.lab { fill: var(--ink-2); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); margin-bottom: 8px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { font: 500 13px var(--f-body); color: var(--ink-2); background: transparent; border: 1px solid var(--axis);
+  border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tabs button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tablewrap { overflow-x: auto; background: var(--surface); box-shadow: 0 0 0 1px var(--ring); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { padding: 7px 10px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { font: 500 11px var(--f-data); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--surface); }
+td:first-child, th:first-child, td.l, th.l { text-align: left; }
+td { font-variant-numeric: tabular-nums; }
+input[type="search"] { font: 14px var(--f-body); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--axis);
+  background: var(--surface); color: var(--ink); width: 100%; max-width: 360px; }
+.tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--bg); font: 12px/1.45 var(--f-data);
+  padding: 6px 9px; border-radius: 5px; z-index: 10; max-width: 280px; }
+ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 72ch; }
+code { font-family: var(--f-data); font-size: 13px; }
+footer { color: var(--muted); font-size: 13px; display: grid; gap: 6px; }
+a { color: var(--accent); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Eleições 2026 · 1º turno · Presidente · arquivos oficiais do TSE</div>
+    <h1>Urnas 2026: biometria e horário</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="warn"><strong>Como ler.</strong> A unidade é a seção eleitoral. O voto é secreto e o log não registra o candidato, então
+    nenhum número aqui diz em quem votaram os eleitores sem biometria ou os que votaram depois das 17h. Uma associação entre
+    seções mostra onde certos padrões coexistem; ela não prova causa nem irregularidade.</div>
+
+  <section>
+    <div class="eyebrow">1 · Identificação</div>
+    <h2>Ausência de cadastro e falha de reconhecimento são coisas diferentes</h2>
+    <p class="note">O BU de 2026 separa três grupos de votantes: habilitados pela digital, com biometria cadastrada mas liberados
+      por dados pessoais (falha de reconhecimento) e sem biometria cadastrada. Cada taxa usa seu próprio denominador.</p>
+    <div class="chart"><div class="legend"><span><i style="background:var(--s3)"></i>Sem cadastro (% dos votantes)</span><span><i style="background:var(--s2)"></i>Falha de reconhecimento (% dos que tinham biometria)</span></div><svg id="c-uf-bio"></svg></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">2 · Horário</div>
+    <h2>Votos presidenciais confirmados depois das 17h de Brasília</h2>
+    <p class="note" id="txt-apos"></p>
+    <div class="grid2">
+      <div class="chart"><h3>Por UF · % das confirmações presidenciais da UF</h3><svg id="c-uf-apos"></svg></div>
+      <div class="chart"><h3>Seções por número de votos após o horário</h3><svg id="c-hist"></svg></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">3 · Associação com o voto</div>
+    <h2>Quanto da associação sobrevive quando se compara seções do mesmo colégio?</h2>
+    <p class="note">Margem Lula − Flávio Bolsonaro (pontos percentuais dos votos válidos) para cada +1 ponto no indicador, com os
+      três indicadores no mesmo modelo, controles de comparecimento, tamanho e modelo da urna. Barras: intervalo de 95% com erro
+      agrupado por município. De cima para baixo, as comparações ficam mais locais.</p>
+    <div class="grid3" id="c-coef"></div>
+    <p class="note" id="txt-coef"></p>
+  </section>
+
+  <section>
+    <div class="eyebrow">4 · Dentro do colégio</div>
+    <h2>Desvios em relação à média do próprio local de votação</h2>
+    <p class="note">Cada ponto reúne 5% das seções. Eixo horizontal: quanto o indicador da seção se afasta da média do seu local
+      de votação (já descontados os outros indicadores e o perfil do eleitorado). Eixo vertical: o mesmo desvio na votação do
+      candidato.</p>
+    <div class="legend"><span><i style="background:var(--s1)"></i>Lula</span><span><i style="background:var(--s2)"></i>Flávio Bolsonaro</span></div>
+    <div class="grid3" id="c-bin"></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">5 · Estados</div>
+    <h2>O mesmo modelo, estado por estado</h2>
+    <div class="tabs" id="tabs-uf" role="group" aria-label="Indicador"></div>
+    <div class="chart"><svg id="c-uf-coef"></svg></div>
+    <p class="note">Modelo principal (efeito fixo de local de votação + perfil do eleitorado), margem Lula − Flávio. Pontos cheios:
+      q &lt; 0,05 após correção de Benjamini–Hochberg entre as 27 UFs.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">6 · Municípios e colégios</div>
+    <h2>Quantos testes locais passam do que o acaso produziria?</h2>
+    <p class="note">Com milhares de testes, cerca de 5% dão p &lt; 0,05 mesmo sem relação alguma. A coluna q &lt; 0,05 aplica a
+      correção de Benjamini–Hochberg (taxa de falsas descobertas).</p>
+    <div class="tablewrap"><table id="t-testes"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">7 · Consulta</div>
+    <h2>Municípios</h2>
+    <input type="search" id="q" placeholder="Buscar município ou UF (ex.: Manaus, RR)" aria-label="Buscar município">
+    <div class="tablewrap" style="max-height:480px"><table id="t-mun"></table></div>
+    <p class="note" id="t-mun-n"></p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Método</div>
+    <h2>De onde vêm os números</h2>
+    <ul class="plain" id="metodo"></ul>
+  </section>
+
+  <footer>
+    <span>Fontes: dadosabertos.tse.jus.br — arquivos transmitidos para totalização (BU e log), boletim de urna (CSV), eleitorado por local de votação e perfil do eleitorado por seção, 2026.</span>
+    <span>Código e bases por seção: pasta <code>analise-urnas-2026</code> do repositório.</span>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = /*__DADOS__*/null;
+const NS = 'http://www.w3.org/2000/svg';
+const fmt = (x, d = 1) => x == null || isNaN(x) ? '—' : x.toLocaleString('pt-BR', {minimumFractionDigits: d, maximumFractionDigits: d});
+const int = x => x == null ? '—' : Math.round(x).toLocaleString('pt-BR');
+const UFN = {AC:'Acre',AL:'Alagoas',AM:'Amazonas',AP:'Amapá',BA:'Bahia',CE:'Ceará',DF:'Distrito Federal',ES:'Espírito Santo',GO:'Goiás',MA:'Maranhão',MG:'Minas Gerais',MS:'Mato Grosso do Sul',MT:'Mato Grosso',PA:'Pará',PB:'Paraíba',PE:'Pernambuco',PI:'Piauí',PR:'Paraná',RJ:'Rio de Janeiro',RN:'Rio Grande do Norte',RO:'Rondônia',RR:'Roraima',RS:'Rio Grande do Sul',SC:'Santa Catarina',SE:'Sergipe',SP:'São Paulo',TO:'Tocantins',ZZ:'Exterior'};
+const IND = {pct_sem_cadastro: 'Sem cadastro biométrico', pct_falha_bio: 'Falha de reconhecimento', pct_apos_corte: 'Votos após 17h'};
+const SPECS = ['Sem efeitos fixos', 'EF de UF', 'EF de município', 'EF de local de votação', 'EF de local + perfil do eleitorado'];
+const SPEC_LAB = {'Sem efeitos fixos': 'Brasil, sem ajuste', 'EF de UF': 'Dentro da UF', 'EF de município': 'Dentro do município',
+  'EF de local de votação': 'Dentro do colégio', 'EF de local + perfil do eleitorado': 'Colégio + perfil'};
+const tip = document.getElementById('tip');
+function showTip(e, html) { tip.innerHTML = html; tip.hidden = false; const x = Math.min(e.clientX + 14, innerWidth - 290); tip.style.left = x + 'px'; tip.style.top = (e.clientY + 14) + 'px'; }
+function hideTip() { tip.hidden = true; }
+function el(tag, attrs = {}, parent) { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+function hover(n, html) { n.addEventListener('mousemove', e => showTip(e, html)); n.addEventListener('mouseleave', hideTip); n.style.cursor = 'default'; }
+function ticks(min, max, n = 5) { const span = max - min, step0 = span / n, mag = 10 ** Math.floor(Math.log10(step0)); const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= step0); const out = []; for (let v = Math.ceil(min / step) * step; v <= max + 1e-9; v += step) out.push(+v.toFixed(10)); return out; }
+
+const B = D.resumo.brasil, Q = D.resumo.qualidade;
+const ufs = D.uf.filter(u => u.uf !== 'ZZ');
+
+// Cabeçalho e números-chave
+document.getElementById('lede').textContent = `${int(Q.secoes_decodificadas)} boletins de urna e logs decodificados, um por seção, cobrindo ${int(B.comparecimento)} votantes. Para cada seção: quantos eleitores votaram sem biometria cadastrada, quantos tinham biometria e não foram reconhecidos, e quantos confirmaram o voto para presidente depois das 17h de Brasília.`;
+const tiles = [
+  [fmt(B.pct_sem_cadastro, 2) + '%', 'votaram sem biometria cadastrada', `${int(B.sem_biometria)} votantes`],
+  [fmt(B.pct_falha_bio, 2) + '%', 'dos que tinham biometria foram liberados sem reconhecimento', `${int(B.hab_biografia)} votantes`],
+  [fmt(B.pct_apos_corte, 3) + '%', 'dos votos presidenciais confirmados após 17h de Brasília', `${int(B.pres_apos_corte)} votos em ${int(D.resumo.secoes_com_voto_apos_corte)} seções`],
+  [int(Q.secoes_decodificadas), 'seções decodificadas', `${int(Q.secoes_log_conciliado)} com log conciliado ao BU`],
+];
+document.getElementById('tiles').innerHTML = tiles.map(t => `<div class="tile"><div class="v">${t[0]}</div><div class="k">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
+
+// 1. Dot plot por UF
+(function () {
+  const svg = document.getElementById('c-uf-bio');
+  const rows = [...ufs].sort((a, b) => (b.pct_sem_cadastro + b.pct_falha_bio) - (a.pct_sem_cadastro + a.pct_falha_bio));
+  const W = 960, rh = 22, top = 24, left = 150, right = 20, H = top + rows.length * rh + 10;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const xmax = Math.max(...rows.map(r => Math.max(r.pct_sem_cadastro, r.pct_falha_bio))) * 1.05;
+  const x = v => left + v / xmax * (W - left - right);
+  ticks(0, xmax).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 6, stroke: 'var(--grid)', 'stroke-width': 1}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = fmt(t, t % 1 ? 1 : 0) + '%'; });
+  rows.forEach((r, i) => {
+    const y = top + i * rh + rh / 2;
+    el('text', {x: left - 10, y: y + 4, 'text-anchor': 'end', class: 'lab'}, svg).textContent = UFN[r.uf];
+    el('line', {x1: x(Math.min(r.pct_sem_cadastro, r.pct_falha_bio)), x2: x(Math.max(r.pct_sem_cadastro, r.pct_falha_bio)), y1: y, y2: y, stroke: 'var(--axis)', 'stroke-width': 2}, svg);
+    [['pct_sem_cadastro', 'var(--s3)'], ['pct_falha_bio', 'var(--s2)']].forEach(([k, c]) => {
+      const n = el('circle', {cx: x(r[k]), cy: y, r: 5, fill: c, stroke: 'var(--surface)', 'stroke-width': 2}, svg);
+      hover(n, `<b>${UFN[r.uf]}</b><br>Sem cadastro: ${fmt(r.pct_sem_cadastro, 2)}% (${int(r.sem_biometria)})<br>Falha de reconhecimento: ${fmt(r.pct_falha_bio, 2)}% (${int(r.hab_biografia)})<br>Seções: ${int(r.secoes)}`);
+    });
+  });
+})();
+
+// 2a. Barras: % após 17h por UF
+(function () {
+  const svg = document.getElementById('c-uf-apos');
+  const rows = [...D.uf].sort((a, b) => b.pct_apos_corte - a.pct_apos_corte);
+  const W = 460, rh = 18, top = 22, left = 120, right = 60, H = top + rows.length * rh + 6;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const xmax = Math.max(...rows.map(r => r.pct_apos_corte)) * 1.02 || 1;
+  const x = v => left + v / xmax * (W - left - right);
+  ticks(0, xmax, 3).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 4, y2: H - 4, stroke: 'var(--grid)'}, svg); el('text', {x: x(t), y: 11, 'text-anchor': 'middle'}, svg).textContent = fmt(t, 2) + '%'; });
+  rows.forEach((r, i) => {
+    const y = top + i * rh;
+    el('text', {x: left - 8, y: y + 12, 'text-anchor': 'end', class: 'lab'}, svg).textContent = UFN[r.uf];
+    const w = Math.max(x(r.pct_apos_corte) - left, 0.5);
+    const n = el('path', {d: `M${left},${y + 3}h${Math.max(w - 3, 0)}a3,3 0 0 1 3,3v6a3,3 0 0 1 -3,3h${-Math.max(w - 3, 0)}z`, fill: 'var(--s1)'}, svg);
+    el('text', {x: left + w + 4, y: y + 12}, svg).textContent = int(r.pres_apos_corte);
+    hover(n, `<b>${UFN[r.uf]}</b><br>${int(r.pres_apos_corte)} de ${int(r.pres_log)} confirmações (${fmt(r.pct_apos_corte, 3)}%)<br>Destas, ${int(r.pres_apos_corte_hab_antes)} de eleitores habilitados antes das 17h`);
+  });
+})();
+
+// 2b. Histograma
+(function () {
+  const svg = document.getElementById('c-hist');
+  const h = D.resumo.histograma_apos_corte; const keys = Object.keys(h).map(Number).sort((a, b) => a - b);
+  const bins = [['0', k => k === 0], ['1', k => k === 1], ['2', k => k === 2], ['3–5', k => k >= 3 && k <= 5], ['6–10', k => k >= 6 && k <= 10], ['11–20', k => k >= 11 && k <= 20], ['21+', k => k >= 21]];
+  const vals = bins.map(([l, f]) => [l, keys.filter(f).reduce((s, k) => s + h[k], 0)]);
+  const W = 460, H = 260, left = 56, bottom = 30, top = 14, right = 8;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const ymax = Math.max(...vals.map(v => v[1])); const ylog = v => v <= 0 ? 0 : Math.log10(v + 1) / Math.log10(ymax + 1);
+  const y = v => H - bottom - ylog(v) * (H - bottom - top);
+  [1, 10, 100, 1000, 10000, 100000, 1000000].filter(t => t <= ymax * 1.5).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: 'var(--grid)'}, svg); el('text', {x: left - 6, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = int(t); });
+  const bw = (W - left - right) / vals.length;
+  vals.forEach(([l, v], i) => {
+    const x0 = left + i * bw + bw * 0.2, w = Math.min(bw * 0.6, 24) , cx = left + i * bw + bw / 2;
+    const yy = y(v), hh = H - bottom - yy;
+    const n = el('path', {d: `M${cx - w / 2},${H - bottom}v${-Math.max(hh - 4, 0)}a4,4 0 0 1 4,-4h${w - 8}a4,4 0 0 1 4,4v${Math.max(hh - 4, 0)}z`, fill: i === 0 ? 'var(--axis)' : 'var(--s1)'}, svg);
+    el('text', {x: cx, y: H - 10, 'text-anchor': 'middle', class: 'lab'}, svg).textContent = l;
+    hover(n, `${l} voto(s) após o horário: ${int(v)} seções`);
+  });
+  el('text', {x: left, y: 10}, svg).textContent = 'seções (escala log)';
+})();
+
+// 3. Coeficientes por especificação
+(function () {
+  const box = document.getElementById('c-coef');
+  Object.keys(IND).forEach(v => {
+    const rows = SPECS.map(s => D.reg.find(r => r.desfecho === 'margem_13_22' && r.modelo === s && r.variavel === v)).filter(Boolean);
+    const div = document.createElement('div'); div.className = 'chart'; div.innerHTML = `<h3>${IND[v]}</h3>`; box.appendChild(div);
+    const svg = el('svg', {}, div);
+    const W = 320, rh = 34, top = 26, left = 112, right = 14, H = top + rows.length * rh + 8;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    let lo = Math.min(0, ...rows.map(r => r.ic95_inf)), hi = Math.max(0, ...rows.map(r => r.ic95_sup)); const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+    const x = c => left + (c - lo) / (hi - lo) * (W - left - right);
+    ticks(lo, hi, 4).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 4, stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = fmt(t, Math.abs(t) < 1 ? 2 : 1); });
+    rows.forEach((r, i) => {
+      const y = top + i * rh + rh / 2;
+      el('text', {x: left - 8, y: y + 4, 'text-anchor': 'end', class: 'lab'}, svg).textContent = SPEC_LAB[r.modelo];
+      el('line', {x1: x(r.ic95_inf), x2: x(r.ic95_sup), y1: y, y2: y, stroke: 'var(--s1)', 'stroke-width': 2, 'stroke-linecap': 'round'}, svg);
+      const n = el('circle', {cx: x(r.coef_pp_por_pp), cy: y, r: 5, fill: 'var(--s1)', stroke: 'var(--surface)', 'stroke-width': 2}, svg);
+      hover(n, `<b>${SPEC_LAB[r.modelo]}</b><br>${fmt(r.coef_pp_por_pp, 3)} p.p. por p.p.<br>IC95%: ${fmt(r.ic95_inf, 3)} a ${fmt(r.ic95_sup, 3)}<br>p = ${r.p < 1e-4 ? '< 0,0001' : fmt(r.p, 4)} · ${int(r.n_secoes)} seções`);
+    });
+  });
+})();
+
+// 4. Binned scatter
+(function () {
+  const box = document.getElementById('c-bin'); const bl = D.resumo.binned_local;
+  Object.keys(IND).forEach(v => {
+    const div = document.createElement('div'); div.className = 'chart'; div.innerHTML = `<h3>${IND[v]}</h3>`; box.appendChild(div);
+    const svg = el('svg', {}, div);
+    const W = 320, H = 240, left = 44, bottom = 30, top = 10, right = 10;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const all = [...bl[v]['13'], ...bl[v]['22']];
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const xl = Math.min(...xs), xh = Math.max(...xs); let yl = Math.min(...ys, -0.5), yh = Math.max(...ys, 0.5);
+    const x = a => left + (a - xl) / (xh - xl || 1) * (W - left - right), y = b => H - bottom - (b - yl) / (yh - yl) * (H - bottom - top);
+    ticks(yl, yh, 4).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: t === 0 ? 'var(--axis)' : 'var(--grid)'}, svg); el('text', {x: left - 6, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = fmt(t, 1); });
+    ticks(xl, xh, 4).forEach(t => { el('text', {x: x(t), y: H - 12, 'text-anchor': 'middle'}, svg).textContent = (t > 0 ? '+' : '') + fmt(t, Math.abs(xh - xl) < 3 ? 2 : 1); });
+    el('text', {x: W - right, y: H - 1, 'text-anchor': 'end'}, svg).textContent = 'desvio do indicador (p.p.)';
+    [['13', 'var(--s1)', 'Lula'], ['22', 'var(--s2)', 'Flávio Bolsonaro']].forEach(([c, col, nm]) => {
+      const pts = bl[v][c];
+      el('path', {d: pts.map((p, i) => (i ? 'L' : 'M') + x(p[0]) + ',' + y(p[1])).join(''), fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linejoin': 'round', opacity: .55}, svg);
+      pts.forEach(p => { const n = el('circle', {cx: x(p[0]), cy: y(p[1]), r: 4, fill: col, stroke: 'var(--surface)', 'stroke-width': 2}, svg); hover(n, `<b>${nm}</b><br>Indicador: ${p[0] > 0 ? '+' : ''}${fmt(p[0], 2)} p.p.<br>Votação: ${p[1] > 0 ? '+' : ''}${fmt(p[1], 2)} p.p. vs. média do colégio`); });
+    });
+  });
+})();
+
+// 5. Forest por UF com abas
+(function () {
+  const tabs = document.getElementById('tabs-uf'); const svg = document.getElementById('c-uf-coef');
+  function draw(v) {
+    [...tabs.children].forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v));
+    svg.innerHTML = '';
+    const rows = D.reg_uf.filter(r => r.variavel === v).sort((a, b) => a.coef - b.coef);
+    const W = 960, rh = 22, top = 24, left = 150, right = 20, H = top + rows.length * rh + 8;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    let lo = Math.min(0, ...rows.map(r => r.coef - 1.96 * r.ep)), hi = Math.max(0, ...rows.map(r => r.coef + 1.96 * r.ep)); const pad = (hi - lo) * .04; lo -= pad; hi += pad;
+    const x = c => left + (c - lo) / (hi - lo) * (W - left - right);
+    ticks(lo, hi, 6).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 4, stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = fmt(t, Math.abs(t) < 1 ? 2 : 1); });
+    rows.forEach((r, i) => {
+      const y = top + i * rh + rh / 2, sig = r.q_bh < 0.05;
+      el('text', {x: left - 10, y: y + 4, 'text-anchor': 'end', class: 'lab'}, svg).textContent = UFN[r.uf];
+      el('line', {x1: x(r.coef - 1.96 * r.ep), x2: x(r.coef + 1.96 * r.ep), y1: y, y2: y, stroke: 'var(--s1)', 'stroke-width': 2, 'stroke-linecap': 'round', opacity: sig ? 1 : .45}, svg);
+      const n = el('circle', {cx: x(r.coef), cy: y, r: 5, fill: sig ? 'var(--s1)' : 'var(--surface)', stroke: 'var(--s1)', 'stroke-width': 2}, svg);
+      hover(n, `<b>${UFN[r.uf]}</b><br>${fmt(r.coef, 3)} p.p. por p.p. (EP ${fmt(r.ep, 3)})<br>p = ${fmt(r.p, 4)} · q = ${fmt(r.q_bh, 4)}<br>${int(r.n_secoes)} seções, ${int(r.municipios)} municípios`);
+    });
+  }
+  Object.entries(IND).forEach(([k, l]) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.v = k; b.textContent = l; b.onclick = () => draw(k); tabs.appendChild(b); });
+  draw('pct_sem_cadastro');
+})();
+
+// 6. Tabela de testes
+(function () {
+  const t = document.getElementById('t-testes');
+  let h = '<thead><tr><th class="l">Nível</th><th class="l">Indicador</th><th>Testados</th><th>p &lt; 0,05</th><th>Esperado ao acaso</th><th>q &lt; 0,05</th><th>q &lt; 0,05, margem ↑</th><th>q &lt; 0,05, margem ↓</th></tr></thead><tbody>';
+  [['testes_municipio', 'Município (modelo com colégio + perfil)'], ['testes_local', 'Colégio (correlação simples)']].forEach(([k, nome]) => {
+    Object.keys(IND).forEach(v => { const r = D.resumo[k][v]; h += `<tr><td class="l">${nome}</td><td class="l">${IND[v]}</td><td>${int(r.testados)}</td><td>${int(r.p_menor_005)}</td><td>${int(r.esperado_sob_nulidade)}</td><td>${int(r.q_bh_menor_005)}</td><td>${int(r.q005_r_positivo)}</td><td>${int(r.q005_r_negativo)}</td></tr>`; });
+  });
+  t.innerHTML = h + '</tbody>';
+})();
+
+// 7. Busca de municípios
+(function () {
+  const t = document.getElementById('t-mun'), q = document.getElementById('q'), n = document.getElementById('t-mun-n');
+  const head = '<thead><tr><th class="l">Município</th><th class="l">UF</th><th>Seções</th><th>Votantes</th><th>Sem cadastro %</th><th>Falha %</th><th>Após 17h</th><th>Lula %</th><th>Flávio %</th></tr></thead>';
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const rows = D.mun.map(r => ({r, k: norm(r[1] + ' ' + r[0])}));
+  function render() {
+    const s = norm(q.value.trim()); let m = s ? rows.filter(x => x.k.includes(s)) : rows.slice().sort((a, b) => b.r[3] - a.r[3]);
+    const shown = m.slice(0, 200);
+    t.innerHTML = head + '<tbody>' + shown.map(({r}) => `<tr><td class="l">${r[1]}</td><td class="l">${r[0]}</td><td>${int(r[2])}</td><td>${int(r[3])}</td><td>${fmt(r[4], 2)}</td><td>${fmt(r[5], 2)}</td><td>${int(r[7])}</td><td>${fmt(r[8], 1)}</td><td>${fmt(r[9], 1)}</td></tr>`).join('') + '</tbody>';
+    n.textContent = s ? `${m.length} resultado(s)${m.length > 200 ? ', mostrando 200' : ''}.` : `Os 200 maiores municípios por votantes. ${int(rows.length)} no total; digite para buscar.`;
+  }
+  q.addEventListener('input', render); render();
+})();
+</script>
