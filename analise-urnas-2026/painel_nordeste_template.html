@@ -1,0 +1,278 @@
+<title>Nordeste depois das 17h</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+/*__CSS__*/
+<style>
+/* Rampa ordinal (faixas de votos após 17h): um matiz, do claro ao escuro */
+:root { --o1: #86b6ef; --o2: #3987e5; --o3: #1c5cab; --o4: #0d366b; --pos: #1c5cab; --neg: #e34948; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --o1: #256abf; --o2: #3987e5; --o3: #86b6ef; --o4: #cde2fb; --pos: #6da7ec; --neg: #e66767; } }
+:root[data-theme="dark"] { --o1: #256abf; --o2: #3987e5; --o3: #86b6ef; --o4: #cde2fb; --pos: #6da7ec; --neg: #e66767; }
+.verdict { display: grid; gap: 10px; background: var(--surface); box-shadow: 0 0 0 1px var(--ring); border-radius: 8px; padding: 18px 20px; }
+.verdict ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; }
+.chip { display: inline-block; font: 500 11px/1 var(--f-data); letter-spacing: .05em; text-transform: uppercase; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--axis); color: var(--ink-2); }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Eleições 2026 · 1º turno · Presidente · 9 estados · logs e boletins de urna</div>
+    <h1>Nordeste depois das 17h</h1>
+    <p class="lede" id="lede"></p>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="verdict">
+    <span class="chip">Leitura</span>
+    <ol id="conclusoes"></ol>
+  </div>
+
+  <section>
+    <div class="eyebrow">1 · Onde</div>
+    <h2>Votos presidenciais confirmados após as 17h, por estado</h2>
+    <div class="legend"><span><i style="background:var(--o2)"></i>17h–18h</span><span><i style="background:var(--o4)"></i>depois das 18h</span></div>
+    <div class="chart"><svg id="c-uf"></svg></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">2 · Como</div>
+    <h2>Ritmo da votação ao longo do dia</h2>
+    <p class="note">Votos computados por hora, média por seção, agrupando as seções pela parcela de votos após as 17h. As seções que
+      terminam tarde votam mais devagar o dia inteiro e acumulam fila; o ritmo não dispara depois das 17h.</p>
+    <div class="chart">
+      <div class="legend" id="leg-ritmo"></div>
+      <svg id="c-ritmo"></svg>
+    </div>
+    <div class="tablewrap"><table id="t-ritmo"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">3 · Por quê</div>
+    <h2>O que acompanha mais votos depois das 17h</h2>
+    <p class="note">Comparando seções do mesmo município: variação em pontos percentuais de votos após as 17h quando cada fator sobe
+      um desvio-padrão, com os demais fixos. Seções maiores e eleitorados de menor escolaridade são os principais fatores.</p>
+    <div class="chart"><svg id="c-det"></svg></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">4 · E o voto?</div>
+    <h2>A margem Lula − Flávio sobe com os votos após 17h só entre lugares diferentes</h2>
+    <div class="grid2">
+      <div class="chart"><h3>Margem média por faixa (bruto)</h3><svg id="c-dose-bruto"></svg></div>
+      <div class="chart"><h3>Desvio da margem dentro do colégio, já com perfil do eleitorado</h3><svg id="c-dose-res"></svg></div>
+    </div>
+    <div class="chart"><h3>Coeficiente de votos após 17h · p.p. de margem por +1 p.p.</h3><svg id="c-coef"></svg></div>
+    <p class="note" id="txt-coef"></p>
+  </section>
+
+  <section>
+    <div class="eyebrow">5 · Estados e municípios</div>
+    <h2>Testes locais</h2>
+    <div class="grid2">
+      <div class="tablewrap"><table id="t-uf"></table></div>
+      <div class="tablewrap"><table id="t-mun-teste"></table></div>
+    </div>
+    <p class="note" id="txt-mun"></p>
+    <div class="tablewrap" style="max-height:420px"><table id="t-mun-sig"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">6 · Consulta</div>
+    <h2>Municípios com mais votos após as 17h</h2>
+    <div class="tablewrap" style="max-height:480px"><table id="t-mun"></table></div>
+    <h2 style="margin-top:12px">Colégios com mais votos após as 17h</h2>
+    <div class="tablewrap" style="max-height:480px"><table id="t-loc"></table></div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Método</div>
+    <h2>Como foi medido</h2>
+    <ul class="plain" id="metodo"></ul>
+  </section>
+  <footer><span>Código e dados: pasta <code>analise-urnas-2026</code> (<code>coletar_tempos.py</code>, <code>analisar_nordeste.py</code>, <code>resultados/nordeste/</code>).</span></footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = /*__DADOS__*/null;
+const NS = 'http://www.w3.org/2000/svg';
+const fmt = (x, d = 1) => x == null || isNaN(x) ? '—' : x.toLocaleString('pt-BR', {minimumFractionDigits: d, maximumFractionDigits: d});
+const int = x => x == null ? '—' : Math.round(x).toLocaleString('pt-BR');
+const UFN = {AL:'Alagoas',BA:'Bahia',CE:'Ceará',MA:'Maranhão',PB:'Paraíba',PE:'Pernambuco',PI:'Piauí',RN:'Rio Grande do Norte',SE:'Sergipe',Nordeste:'Nordeste'};
+const tip = document.getElementById('tip');
+function showTip(e, h) { tip.innerHTML = h; tip.hidden = false; tip.style.left = Math.min(e.clientX + 14, innerWidth - 290) + 'px'; tip.style.top = (e.clientY + 14) + 'px'; }
+function el(t, a = {}, p) { const n = document.createElementNS(NS, t); for (const k in a) n.setAttribute(k, a[k]); if (p) p.appendChild(n); return n; }
+function hover(n, h) { n.addEventListener('mousemove', e => showTip(e, h)); n.addEventListener('mouseleave', () => tip.hidden = true); }
+function ticks(min, max, n = 5) { const s0 = (max - min) / n, mag = 10 ** Math.floor(Math.log10(s0)); const st = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= s0); const o = []; for (let v = Math.ceil(min / st) * st; v <= max + 1e-9; v += st) o.push(+v.toFixed(10)); return o; }
+function hbar(svg, x0, y, w, h, fill) { const r = Math.min(3, w / 2, h / 2); return el('path', {d: `M${x0},${y}h${Math.max(w - r, 0)}a${r},${r} 0 0 1 ${r},${r}v${h - 2 * r}a${r},${r} 0 0 1 ${-r},${r}h${-Math.max(w - r, 0)}z`, fill}, svg); }
+
+const NEr = D.por_uf.find(u => u.uf === 'Nordeste'), R = D.ritmo;
+const habDepois = NEr.pres_apos - NEr.pres_apos_hab_antes;
+document.getElementById('lede').textContent = `${int(NEr.pres_apos)} votos para presidente (${fmt(NEr.pct_apos, 1)}%) foram confirmados depois das 17h nos nove estados, em ${int(NEr.secoes_com_apos)} das ${int(NEr.secoes)} seções. Os logs de todas as seções foram relidos eleitor a eleitor para ver como essa votação aconteceu.`;
+document.getElementById('tiles').innerHTML = [
+  [fmt(NEr.pct_apos, 2) + '%', 'dos votos presidenciais após 17h', `${int(NEr.pres_apos)} votos · Brasil: 2,95%`],
+  [fmt(100 * habDepois / NEr.pres_apos, 1) + '%', 'desses eleitores foram habilitados depois das 17h', 'o padrão de fila no encerramento'],
+  [fmt(R.pct_bio_apos, 1) + '%', 'dos que votaram após 17h se identificaram pela digital', `${fmt(D.bio_dia, 1)}% no dia inteiro`],
+  [int(R.votos_rajada_apos), 'votos computados a menos de 20 s do anterior, após 17h', `menor intervalo observado: ${int(D.gap_min)} s`],
+].map(t => `<div class="tile"><div class="v">${t[0]}</div><div class="k">${t[1]}</div><div class="d">${t[2]}</div></div>`).join('');
+
+const A = (m, v = 'pct_apos_corte') => D.associacao.find(r => r.desfecho === 'margem' && r.modelo === m && r.variavel === v);
+const G = R.grupos, gk = Object.keys(G);
+const det = D.determinantes['mesmo município'].coef;
+const topDet = [...det].sort((a, b) => Math.abs(b.efeito_1dp) - Math.abs(a.efeito_1dp));
+document.getElementById('conclusoes').innerHTML = [
+  `<b>É fila, não voto fora de hora.</b> ${fmt(100 * habDepois / NEr.pres_apos, 1)}% dos votos após 17h são de eleitores habilitados depois das 17h, e o ritmo da urna continua o mesmo: atendimento mediano de ${int(G[gk[3]].dur_med_depois)} s e intervalo mediano de ${int(G[gk[3]].gap_med_depois)} s entre votos nas seções com 30%+ após 17h, contra ${int(G[gk[0]].dur_med_antes)} s e ${int(G[gk[0]].gap_med_antes)} s nas seções que fecharam no horário.`,
+  `<b>Os eleitores do fim do dia se parecem com os do dia inteiro.</b> ${fmt(R.pct_bio_apos, 1)}% se identificaram pela digital (${fmt(D.bio_dia, 1)}% no dia todo) e ${fmt(R.pct_manual_apos, 1)}% foram liberados pelo mesário (${fmt(D.manual_dia, 1)}% no dia todo). Nenhum voto foi computado em menos de 20 s após o anterior.`,
+  `<b>A fila nasce cedo.</b> Seções que terminam com 30%+ dos votos após 17h já votavam mais devagar desde as 8h (${fmt(G[gk[3]].votos_por_hora_media[8], 1)} votos/h, contra ${fmt(G[gk[1]].votos_por_hora_media[8], 1)}), com mais eleitores (${int(G[gk[3]].comparecimento_medio)} vs ${int(G[gk[0]].comparecimento_medio)}), mais tentativas de digital por eleitor (${fmt(G[gk[3]].tent_antes, 2)} vs ${fmt(G[gk[0]].tent_antes, 2)}) e mais urnas antigas (${fmt(G[gk[3]].ue2013_2015, 0)}% UE2013/2015 vs ${fmt(G[gk[0]].ue2013_2015, 0)}%).`,
+  `<b>A relação com o voto é geográfica.</b> Sem ajuste, +1 p.p. de votos após 17h acompanha ${fmt(A('Nordeste, sem ajuste').coef, 2)} p.p. a mais de margem para Lula; comparando seções do mesmo colégio e com o mesmo perfil, ${fmt(A('Colégio + perfil').coef, 3)}. Os votos tardios se concentram no sertão e em municípios mais pobres, onde Lula já tem as maiores margens.`,
+  `<b>O que fica de alerta é operacional:</b> filas de duas a três horas em ${int(NEr.secoes_apos_30)} seções (30%+ dos votos após 17h), ligadas a seções grandes, urnas antigas e leitura de digital lenta.`,
+].map(t => `<li>${t}</li>`).join('');
+
+// 1. Barras empilhadas por UF
+(function () {
+  const svg = document.getElementById('c-uf');
+  const rows = D.por_uf.filter(u => u.uf !== 'Nordeste').sort((a, b) => b.pct_apos - a.pct_apos);
+  rows.push(D.por_uf.find(u => u.uf === 'Nordeste'));
+  const W = 960, rh = 26, top = 24, left = 170, right = 140, H = top + rows.length * rh + 8;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const xmax = Math.max(...rows.map(r => r.pct_apos)) * 1.05;
+  const x = v => left + v / xmax * (W - left - right);
+  ticks(0, xmax).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 4, stroke: 'var(--grid)'}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = fmt(t, 0) + '%'; });
+  rows.forEach((r, i) => {
+    const y = top + i * rh + 5, h = 16, p2 = 100 * r.pres_apos_mais_1h / r.pres_log, p1 = r.pct_apos - p2;
+    const lab = el('text', {x: left - 10, y: y + 12, 'text-anchor': 'end', class: 'lab'}, svg); lab.textContent = UFN[r.uf]; if (r.uf === 'Nordeste') lab.setAttribute('font-weight', '700');
+    el('rect', {x: left, y, width: Math.max(x(p1) - left - 1, 0), height: h, fill: 'var(--o2)'}, svg);
+    const b2 = hbar(svg, x(p1) + 1, y, Math.max(x(r.pct_apos) - x(p1) - 1, 1), h, 'var(--o4)');
+    el('text', {x: x(r.pct_apos) + 6, y: y + 12}, svg).textContent = `${fmt(r.pct_apos, 1)}% · ${int(r.pres_apos)}`;
+    const ht = `<b>${UFN[r.uf]}</b><br>${int(r.pres_apos)} votos após 17h (${fmt(r.pct_apos, 2)}%)<br>depois das 18h: ${int(r.pres_apos_mais_1h)}<br>seções com 30%+: ${int(r.secoes_apos_30)}`;
+    hover(b2, ht);
+    [...svg.querySelectorAll('rect')].slice(-1).forEach(n => hover(n, ht));
+  });
+})();
+
+// 2. Linhas: votos por hora
+(function () {
+  const svg = document.getElementById('c-ritmo'), cols = ['var(--o1)', 'var(--o2)', 'var(--o3)', 'var(--o4)'];
+  document.getElementById('leg-ritmo').innerHTML = gk.map((k, i) => `<span><i style="background:${cols[i]}"></i>${k} (${int(G[k].secoes)} seções)</span>`).join('');
+  const hrs = []; for (let h = 8; h <= 21; h++) hrs.push(h);
+  const W = 960, H = 320, left = 48, right = 20, top = 12, bottom = 32;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const ymax = Math.max(...gk.flatMap(k => G[k].votos_por_hora_media)) * 1.08;
+  const x = h => left + (h - 8) / 14 * (W - left - right), y = v => H - bottom - v / ymax * (H - bottom - top);
+  ticks(0, ymax, 5).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: 'var(--grid)'}, svg); el('text', {x: left - 8, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = int(t); });
+  hrs.forEach(h => el('text', {x: x(h + .5), y: H - 10, 'text-anchor': 'middle'}, svg).textContent = h + 'h');
+  el('rect', {x: x(17), y: top, width: x(21.99) - x(17), height: H - bottom - top, fill: 'var(--wash)'}, svg);
+  el('text', {x: x(17) + 6, y: top + 14, class: 'lab'}, svg).textContent = 'após 17h';
+  gk.forEach((k, i) => {
+    const v = G[k].votos_por_hora_media;
+    const pts = hrs.map(h => [x(h + .5), y(v[h])]);
+    el('path', {d: pts.map((p, j) => (j ? 'L' : 'M') + p[0] + ',' + p[1]).join(''), fill: 'none', stroke: cols[i], 'stroke-width': 2, 'stroke-linejoin': 'round'}, svg);
+    hrs.forEach((h, j) => { const c = el('circle', {cx: pts[j][0], cy: pts[j][1], r: 4, fill: cols[i], stroke: 'var(--surface)', 'stroke-width': 2}, svg); hover(c, `<b>${k}</b><br>${h}h–${h + 1}h: ${fmt(v[h], 1)} votos/seção`); });
+  });
+  el('text', {x: left, y: top - 2}, svg).textContent = '';
+  const t = document.getElementById('t-ritmo');
+  t.innerHTML = `<thead><tr><th class="l">Grupo de seções</th><th>Seções</th><th>Votantes médios</th><th>Atendimento antes 17h</th><th>Atendimento após 17h</th><th>Intervalo antes</th><th>Intervalo após</th><th>Tentativas de digital</th><th>Urnas UE2013/15</th></tr></thead><tbody>` +
+    gk.map(k => `<tr><td class="l">${k}</td><td>${int(G[k].secoes)}</td><td>${int(G[k].comparecimento_medio)}</td><td>${int(G[k].dur_med_antes)} s</td><td>${G[k].dur_med_depois == null ? '—' : int(G[k].dur_med_depois) + ' s'}</td><td>${int(G[k].gap_med_antes)} s</td><td>${G[k].gap_med_depois == null ? '—' : int(G[k].gap_med_depois) + ' s'}</td><td>${fmt(G[k].tent_antes, 2)}</td><td>${fmt(G[k].ue2013_2015, 0)}%</td></tr>`).join('') + '</tbody>';
+})();
+
+// 3. Determinantes (efeito de 1 DP)
+(function () {
+  const svg = document.getElementById('c-det');
+  const NOMES = {log_aptos: 'Tamanho da seção (eleitores)', pct_comparecimento: 'Comparecimento', pct_falha_bio: 'Falha de reconhecimento biométrico', pct_sem_cadastro: 'Votantes sem cadastro biométrico', urna_UE2013: 'Urna UE2013 (vs UE2022)', urna_UE2015: 'Urna UE2015 (vs UE2022)', urna_UE2020: 'Urna UE2020 (vs UE2022)', idade_60_mais: 'Eleitores com 60+ anos', pct_idade_16_24: 'Eleitores de 16 a 24 anos', pct_escol_ate_fund_incompleto: 'Até fundamental incompleto', pct_escol_superior: 'Superior completo', pct_feminino: 'Mulheres'};
+  const rows = topDet;
+  const W = 960, rh = 26, top = 24, left = 260, right = 70, H = top + rows.length * rh + 8;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const lo = Math.min(0, ...rows.map(r => r.efeito_1dp)) * 1.1, hi = Math.max(...rows.map(r => r.efeito_1dp)) * 1.05;
+  const x = v => left + (v - lo) / (hi - lo) * (W - left - right);
+  ticks(lo, hi, 6).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 4, stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = (t > 0 ? '+' : '') + fmt(t, 1); });
+  rows.forEach((r, i) => {
+    const y = top + i * rh + 5, v = r.efeito_1dp;
+    el('text', {x: left - 10, y: y + 12, 'text-anchor': 'end', class: 'lab'}, svg).textContent = NOMES[r.variavel] || r.variavel;
+    const x0 = Math.min(x(0), x(v)), w = Math.max(Math.abs(x(v) - x(0)), 1);
+    const b = el('rect', {x: x0, y, width: w, height: 16, rx: 3, fill: v >= 0 ? 'var(--pos)' : 'var(--neg)'}, svg);
+    el('text', {x: v >= 0 ? x(v) + 6 : x(v) - 6, y: y + 12, 'text-anchor': v >= 0 ? 'start' : 'end'}, svg).textContent = (v > 0 ? '+' : '') + fmt(v, 2);
+    hover(b, `<b>${NOMES[r.variavel] || r.variavel}</b><br>${(v > 0 ? '+' : '') + fmt(v, 2)} p.p. por desvio-padrão<br>p ${r.p < 1e-4 ? '< 0,0001' : '= ' + fmt(r.p, 4)}`);
+  });
+})();
+
+// 4. Dose-resposta e coeficientes
+(function () {
+  const dose = D.dose_resposta;
+  function bars(id, key, ep) {
+    const svg = document.getElementById(id), W = 460, H = 250, left = 46, right = 10, top = 14, bottom = 34;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const vals = dose.map(d => d[key]); let lo = Math.min(0, ...vals.map((v, i) => v - (ep ? 1.96 * dose[i][ep] : 0))), hi = Math.max(0, ...vals.map((v, i) => v + (ep ? 1.96 * dose[i][ep] : 0)));
+    if (ep) { const m = Math.max(Math.abs(lo), Math.abs(hi), 1); lo = -m; hi = m; } else hi *= 1.1;
+    const y = v => H - bottom - (v - lo) / (hi - lo) * (H - bottom - top), bw = (W - left - right) / dose.length;
+    ticks(lo, hi, 4).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: left - 6, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = fmt(t, ep ? 1 : 0); });
+    dose.forEach((d, i) => {
+      const cx = left + i * bw + bw / 2, v = d[key];
+      el('text', {x: cx, y: H - 18, 'text-anchor': 'middle', class: 'lab'}, svg).textContent = d.faixa;
+      el('text', {x: cx, y: H - 4, 'text-anchor': 'middle'}, svg).textContent = int(d.secoes);
+      if (ep) {
+        el('line', {x1: cx, x2: cx, y1: y(v - 1.96 * d[ep]), y2: y(v + 1.96 * d[ep]), stroke: 'var(--o3)', 'stroke-width': 2, 'stroke-linecap': 'round'}, svg);
+        const c = el('circle', {cx, cy: y(v), r: 5, fill: 'var(--o3)', stroke: 'var(--surface)', 'stroke-width': 2}, svg);
+        hover(c, `<b>${d.faixa}</b><br>${v > 0 ? '+' : ''}${fmt(v, 2)} p.p. (IC95% ±${fmt(1.96 * d[ep], 2)})<br>${int(d.secoes)} seções`);
+      } else {
+        const w = Math.min(bw * .6, 24), y0 = y(0), yy = y(v);
+        const b = el('path', {d: `M${cx - w / 2},${y0}V${yy + 4}a4,4 0 0 1 4,-4h${w - 8}a4,4 0 0 1 4,4V${y0}z`, fill: 'var(--o3)'}, svg);
+        el('text', {x: cx, y: yy - 6, 'text-anchor': 'middle'}, svg).textContent = fmt(v, 1);
+        hover(b, `<b>${d.faixa}</b><br>Margem Lula − Flávio: ${fmt(v, 1)} p.p.<br>${int(d.secoes)} seções`);
+      }
+    });
+  }
+  bars('c-dose-bruto', 'margem_bruta'); bars('c-dose-res', 'margem_mesmo_colegio', 'ep_mesmo_colegio');
+  const svg = document.getElementById('c-coef');
+  const specs = ['Nordeste, sem ajuste', 'Dentro da UF', 'Dentro do município', 'Dentro do colégio', 'Colégio + perfil'];
+  const rows = specs.map(s => A(s));
+  const W = 960, rh = 30, top = 24, left = 190, right = 30, H = top + rows.length * rh + 6;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const lo = Math.min(0, ...rows.map(r => r.ic_inf)) - .05, hi = Math.max(...rows.map(r => r.ic_sup)) * 1.05;
+  const x = c => left + (c - lo) / (hi - lo) * (W - left - right);
+  ticks(lo, hi, 6).forEach(t => { el('line', {x1: x(t), x2: x(t), y1: top - 6, y2: H - 4, stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: x(t), y: 12, 'text-anchor': 'middle'}, svg).textContent = fmt(t, 1); });
+  rows.forEach((r, i) => {
+    const y = top + i * rh + rh / 2;
+    el('text', {x: left - 10, y: y + 4, 'text-anchor': 'end', class: 'lab'}, svg).textContent = r.modelo;
+    el('line', {x1: x(r.ic_inf), x2: x(r.ic_sup), y1: y, y2: y, stroke: 'var(--o3)', 'stroke-width': 2, 'stroke-linecap': 'round'}, svg);
+    const c = el('circle', {cx: x(r.coef), cy: y, r: 5, fill: 'var(--o3)', stroke: 'var(--surface)', 'stroke-width': 2}, svg);
+    el('text', {x: x(r.ic_sup) + 8, y: y + 4}, svg).textContent = fmt(r.coef, 3);
+    hover(c, `<b>${r.modelo}</b><br>${fmt(r.coef, 3)} p.p. por p.p.<br>IC95%: ${fmt(r.ic_inf, 3)} a ${fmt(r.ic_sup, 3)}`);
+  });
+  const p90 = D.p90_apos;
+  document.getElementById('txt-coef').textContent = `No modelo mais local, ir de uma seção sem votos após 17h para uma no 90º percentil do Nordeste (${fmt(p90, 1)}%) muda a margem em ${fmt(A('Colégio + perfil').coef * p90, 2)} p.p. Os mesmos controles reduzem a falha de reconhecimento a ${fmt(A('Colégio + perfil', 'pct_falha_bio').coef, 3)} e a ausência de cadastro a ${fmt(A('Colégio + perfil', 'pct_sem_cadastro').coef, 3)}, ambos sem significância.`;
+})();
+
+// 5. Tabelas de testes
+(function () {
+  document.getElementById('t-uf').innerHTML = '<thead><tr><th class="l">Estado</th><th>Coef.</th><th>IC 95%</th><th>q (BH)</th></tr></thead><tbody>' +
+    D.associacao_uf.map(r => `<tr><td class="l">${UFN[r.uf]}</td><td>${fmt(r.coef, 3)}</td><td>${fmt(r.ic_inf, 3)} a ${fmt(r.ic_sup, 3)}</td><td>${fmt(r.q, 3)}</td></tr>`).join('') + '</tbody>';
+  const T = D.testes_municipio;
+  document.getElementById('t-mun-teste').innerHTML = `<thead><tr><th class="l">Municípios</th><th>Valor</th></tr></thead><tbody>
+    <tr><td class="l">Testados (40+ seções, 5+ colégios)</td><td>${int(T.testados)}</td></tr>
+    <tr><td class="l">p &lt; 0,05</td><td>${int(T.p_005)}</td></tr>
+    <tr><td class="l">Esperado só pelo acaso</td><td>${int(T.esperado)}</td></tr>
+    <tr><td class="l">q &lt; 0,05 (Benjamini–Hochberg)</td><td>${int(T.q_005)}</td></tr>
+    <tr><td class="l">… com margem para Lula maior</td><td>${int(T.q_005_pos)}</td></tr>
+    <tr><td class="l">… com margem para Lula menor</td><td>${int(T.q_005_neg)}</td></tr></tbody>`;
+  document.getElementById('txt-mun').textContent = `Estados: coeficiente do modelo mais local (mesmo colégio + perfil). Municípios: mesmo modelo dentro de cada município, erro agrupado por colégio. Os ${int(T.q_005)} municípios abaixo passam na correção; nenhum tem coeficiente grande o bastante para alterar o resultado local de forma visível.`;
+  document.getElementById('t-mun-sig').innerHTML = '<thead><tr><th class="l">Município</th><th class="l">UF</th><th>Seções</th><th>Após 17h</th><th>Coef.</th><th>q</th></tr></thead><tbody>' +
+    T.significativos.map(r => `<tr><td class="l">${r.municipio}</td><td class="l">${r.uf}</td><td>${int(r.secoes)}</td><td>${fmt(r.pct_apos, 1)}%</td><td>${fmt(r.coef, 3)}</td><td>${fmt(r.q, 3)}</td></tr>`).join('') + '</tbody>';
+})();
+
+// 6. Tops
+(function () {
+  const h = '<thead><tr><th class="l">Município</th><th class="l">UF</th><th>Seções</th><th>Votos após 17h</th><th>% após 17h</th><th>Seções 30%+</th><th>Falha bio %</th><th>Lula %</th><th>Flávio %</th></tr></thead>';
+  document.getElementById('t-mun').innerHTML = h + '<tbody>' + D.municipios_top.map(r => `<tr><td class="l">${r.NM_MUNICIPIO}</td><td class="l">${r.uf}</td><td>${int(r.secoes)}</td><td>${int(r.pres_apos)}</td><td>${fmt(r.pct_apos, 1)}</td><td>${int(r.secoes_apos_30)}</td><td>${fmt(r.pct_falha_bio, 1)}</td><td>${fmt(r.pct_13, 1)}</td><td>${fmt(r.pct_22, 1)}</td></tr>`).join('') + '</tbody>';
+  const h2 = '<thead><tr><th class="l">Local de votação</th><th class="l">Município</th><th>Seções</th><th>% após 17h</th><th>Seções 30%+</th><th>Falha bio %</th><th>Lula %</th><th>Flávio %</th></tr></thead>';
+  document.getElementById('t-loc').innerHTML = h2 + '<tbody>' + D.locais_top.map(r => `<tr><td class="l">${r.NM_LOCAL_VOTACAO || '—'}</td><td class="l">${r.NM_MUNICIPIO}–${r.uf}</td><td>${int(r.secoes)}</td><td>${fmt(r.pct_apos, 1)}</td><td>${int(r.secoes_apos_30)}</td><td>${fmt(r.pct_falha_bio, 1)}</td><td>${fmt(r.pct_13, 1)}</td><td>${fmt(r.pct_22, 1)}</td></tr>`).join('') + '</tbody>';
+})();
+
+document.getElementById('metodo').innerHTML = [
+  `Nordeste = AL, BA, CE, MA, PB, PE, PI, RN e SE: ${int(NEr.secoes)} seções. O log de cada uma foi relido inteiro (${int(R.secoes_com_tempos)} com log conciliado ao BU entram nos números de ritmo).`,
+  'Para cada eleitor, o log marca a habilitação ("Eleitor foi habilitado") e o fim ("O voto do eleitor foi computado"). Atendimento = diferença entre os dois; intervalo = tempo entre dois votos computados seguidos. Os valores de seção são medianas; os de grupo, a mediana entre seções.',
+  'Votos após 17h = confirmações "Voto confirmado para [Presidente]" a partir das 17:00:00 de Brasília (18h locais em Fernando de Noronha). O log não registra o candidato.',
+  `Modelos: mínimos quadrados ponderados pelos votos válidos, ${int(D.secoes_modelo)} seções, erro agrupado por município, com efeitos fixos de UF, município ou colégio, controles de comparecimento, tamanho e modelo da urna e, no modelo mais local, sexo, idade e escolaridade do eleitorado da seção. Dose-resposta: médias ponderadas por faixa, antes e depois de remover a média do colégio e os controles.`,
+  'Limites: associação entre seções não diz em quem votaram os eleitores do fim do dia. As atas e as senhas distribuídas na fila não estão nos arquivos públicos; confirmar que cada eleitor tardio estava na fila às 17h exige esses documentos.',
+].map(t => `<li>${t}</li>`).join('');
+</script>
