@@ -67,6 +67,18 @@
   </section>
 
   <section>
+    <div class="eyebrow">4b · Existe um salto às 17h?</div>
+    <h2>A associação cresce ao longo da tarde, sem degrau no encerramento</h2>
+    <p class="note">Cada ponto: p.p. de margem Lula − Flávio quando +1 p.p. dos votos da seção cai naquele bloco de horário, em vez
+      de 10h–12h. Votos irregulares adicionados após o encerramento apareceriam como um salto a partir das 17h. Com o ritmo da
+      urna no modelo (votos/hora pela manhã, duração do atendimento, tentativas de digital), os blocos da tarde e da noite ficam
+      todos parecidos.</p>
+    <div class="legend" id="leg-hora"></div>
+    <div class="chart"><svg id="c-hora"></svg></div>
+    <p class="note" id="txt-hora"></p>
+  </section>
+
+  <section>
     <div class="eyebrow">5 · Estados e municípios</div>
     <h2>Testes locais</h2>
     <div class="grid2">
@@ -241,6 +253,36 @@ document.getElementById('conclusoes').innerHTML = [
   });
   const p90 = D.p90_apos;
   document.getElementById('txt-coef').textContent = `No modelo mais local, ir de uma seção sem votos após 17h para uma no 90º percentil do Nordeste (${fmt(p90, 1)}%) muda a margem em ${fmt(A('Colégio + perfil').coef * p90, 2)} p.p. Os mesmos controles reduzem a falha de reconhecimento a ${fmt(A('Colégio + perfil', 'pct_falha_bio').coef, 3)} e a ausência de cadastro a ${fmt(A('Colégio + perfil', 'pct_sem_cadastro').coef, 3)}, ambos sem significância.`;
+})();
+
+// 4b. Teste por bloco de horário
+(function () {
+  const T = D.teste_hora; if (!T) return;
+  const specs = Object.keys(T.por_hora), cols = ['var(--o1)', 'var(--o3)', 'var(--neg)'];
+  document.getElementById('leg-hora').innerHTML = specs.map((s, i) => `<span><i style="background:${cols[i]}"></i>${s}</span>`).join('');
+  const blocos = T.por_hora[specs[0]].map(r => r.bloco);
+  const svg = document.getElementById('c-hora'), W = 960, H = 300, left = 54, right = 16, top = 12, bottom = 34;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const all = specs.flatMap(s => T.por_hora[s].flatMap(r => [r.coef - 1.96 * r.ep, r.coef + 1.96 * r.ep]));
+  const lo = Math.min(0, ...all) * 1.08, hi = Math.max(0, ...all) * 1.08;
+  const bw = (W - left - right) / blocos.length, y = v => H - bottom - (v - lo) / (hi - lo) * (H - bottom - top);
+  ticks(lo, hi, 5).forEach(t => { el('line', {x1: left, x2: W - right, y1: y(t), y2: y(t), stroke: t === 0 ? 'var(--axis)' : 'var(--grid)', 'stroke-width': t === 0 ? 1.5 : 1}, svg); el('text', {x: left - 8, y: y(t) + 4, 'text-anchor': 'end'}, svg).textContent = fmt(t, 1); });
+  const i17 = blocos.indexOf('17h–18h');
+  el('rect', {x: left + i17 * bw, y: top, width: (blocos.length - i17) * bw, height: H - bottom - top, fill: 'var(--wash)'}, svg);
+  blocos.forEach((b, i) => el('text', {x: left + i * bw + bw / 2, y: H - 12, 'text-anchor': 'middle', class: 'lab'}, svg).textContent = b);
+  specs.forEach((s, k) => {
+    const rows = T.por_hora[s], off = (k - 1) * 16;
+    const pts = rows.map((r, i) => [left + i * bw + bw / 2 + off, y(r.coef)]);
+    el('path', {d: pts.map((p, j) => (j ? 'L' : 'M') + p[0] + ',' + p[1]).join(''), fill: 'none', stroke: cols[k], 'stroke-width': 2, opacity: .5}, svg);
+    rows.forEach((r, i) => {
+      const cx = pts[i][0];
+      el('line', {x1: cx, x2: cx, y1: y(r.coef - 1.96 * r.ep), y2: y(r.coef + 1.96 * r.ep), stroke: cols[k], 'stroke-width': 2, 'stroke-linecap': 'round'}, svg);
+      const c = el('circle', {cx, cy: y(r.coef), r: 4.5, fill: cols[k], stroke: 'var(--surface)', 'stroke-width': 2}, svg);
+      hover(c, `<b>${s}</b><br>${r.bloco}: ${fmt(r.coef, 3)} (IC95% ${fmt(r.coef - 1.96 * r.ep, 3)} a ${fmt(r.coef + 1.96 * r.ep, 3)})`);
+    });
+  });
+  const m = Object.fromEntries(T.por_hora[specs[0]].map(r => [r.bloco, r.coef])), c = Object.fromEntries(T.por_hora[specs[1]].map(r => [r.bloco, r.coef]));
+  document.getElementById('txt-hora').textContent = `Dentro do município, a associação já sobe de ${fmt(m['8h–10h'], 2)} (8h–10h) para ${fmt(m['15h–16h'], 2)} (15h–16h), antes de qualquer voto tardio: quem vota mais tarde no dia tende a votar mais em Lula. No mesmo colégio com mesmo perfil, 17h–18h (${fmt(c['17h–18h'], 3)}) fica no nível de 14h–15h (${fmt(c['14h–15h'], 3)}). Mesmo atribuindo toda a associação aos votos tardios, o efeito máximo seria de cerca de ${int(T.impacto_maximo_votos_margem)} votos de margem em todo o Nordeste.`;
 })();
 
 // 5. Tabelas de testes

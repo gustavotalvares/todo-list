@@ -26,6 +26,9 @@ def main():
     r['p90_apos'] = float(np.percentile(100 * c.pres_apos_corte / c.log_presidente, 90))
     r['gap_min'] = float(ritmo.gap_min_depois.min())
     r['ritmo'].pop('secoes_rajada_top', None)
+    th = AQUI / 'resultados' / 'nordeste' / 'teste_hora.json'
+    if th.exists():
+        r['teste_hora'] = json.loads(th.read_text())
     tpl = (AQUI / 'painel_nordeste_template.html').read_text()
     css = re.search(r'<style>.*?</style>', (AQUI / 'painel_template.html').read_text(), re.S).group(0)
     html = tpl.replace('/*__CSS__*/', css).replace(
